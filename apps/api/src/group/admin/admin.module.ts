@@ -1,0 +1,17 @@
+import { Module } from '@nestjs/common';
+import { AdminAccessGuard } from '../../common/guards/admin-access.guard';
+import { RolesGuard } from '../../common/guards/roles.guard';
+import { MediaModule } from '../media/media.module';
+import { PaymentsModule } from '../commerce/payments/payments.module';
+import { SiteSettingsModule } from '../site-settings/site-settings.module';
+import { AuthModule } from '../auth/auth.module';
+import { AdminAuditService } from './audit.service';
+import { AdminController } from './admin.controller';
+import { AdminService } from './admin.service';
+
+@Module({
+  imports: [MediaModule, SiteSettingsModule, PaymentsModule, AuthModule],
+  controllers: [AdminController],
+  providers: [AdminService, AdminAuditService, RolesGuard, AdminAccessGuard],
+})
+export class AdminModule {}

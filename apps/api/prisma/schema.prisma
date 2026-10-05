@@ -1,0 +1,957 @@
+generator client {
+  provider     = "prisma-client"
+  output       = "../src/generated/prisma"
+  runtime      = "nodejs"
+  moduleFormat = "cjs"
+}
+
+// =============================================================================
+// KIA GROUP database — domain ownership map
+// =============================================================================
+// One database, one identity, six department domains. Every model belongs to
+// exactly one domain; the domain prefixes below mirror the API layout in
+// apps/api/src (group/ = platform, academy/ = KIA Academy, events/ = KIA
+// Events). Cross-domain relations point AT the platform User identity —
+// department tables never reference each other directly (spec §12, §35).
+// Full narrative: docs/database/architecture.md.
+//
+//   GROUP (platform)     User, Role, PhoneOtp, PasswordResetToken,
+//                        TwoFactorRecoveryCode, RefreshToken, SiteSetting,
+//                        ContactMessage, EmailLog, AdminAuditLog, Cart(+Item),
+//                        Order(+Item), Payment, PaymentWebhookEvent, Invoice,
+//                        Entitlement, LearnerWallet(+Transaction),
+//                        SupportTicket(+Reply/Attachment), LearnerMessage,
+//                        LearnerTodo
+//   ACADEMY              Assessment, Roadmap, ReadinessTest, PersonalityResult,
+//                        ExamAttempt, Course, Lesson, CourseExam(+Attempt),
+//                        CourseAttachment, Enrollment, LessonProgress,
+//                        BootcampProfile
+//   EVENTS               Challenge, ChallengeSubmission, Competition,
+//                        CompetitionRegistration
+// =============================================================================
+
+// Connection URL lives in prisma.config.ts (Prisma 7 no longer accepts
+// `url` in schema files). PrismaClient connects via the pg driver adapter.
+datasource db {
+  provider = "postgresql"
+}
+
+enum PaymentStatus {
+  PENDING
+  PROCESSING
+  COMPLETED
+  FAILED
+  CANCELLED
+  REFUNDED
+  PARTIALLY_REFUNDED
+}
+
+enum ProductType {
+  READINESS_TEST
+  ROADMAP_BUNDLE
+  COURSE
+}
+
+enum EntitlementSource {
+  PURCHASE
+  CHALLENGE
+  BUNDLE
+  FREE
+}
+
+/**
+ * Canonical entitlement resource vocabulary (DB-2). Learner-side checks
+ * (hasCourseEntitlement / hasRoadmapEntitlement) and payment fulfilment both
+ * use exactly these values — the admin grant API accepts nothing else.
+ */
+enum EntitlementResourceType {
+  course
+  roadmap
+  readiness
+}
+
+enum OrderStatus {
+  PENDING
+  AWAITING_PAYMENT
+  PAID
+  FAILED
+  CANCELLED
+  REFUNDED
+}
+
+/**
+ * How an order entered the system (DB-2: DB-enforced, not app-validated).
+ */
+enum OrderSource {
+  DIRECT
+  CART
+}
+
+/**
+ * Account lifecycle (DB-2): SUSPENDED/BANNED can never authenticate.
+ */
+enum UserStatus {
+  ACTIVE
+  SUSPENDED
+  BANNED
+}
+
+model Role {
+  id        String   @id @default(cuid())
+  key       String   @unique
+  name      String
+  isSystem  Boolean  @default(false)
+  access    Json?
+  createdAt DateTime @default(now())
+}
+
+model User {
+  id                  String     @id @default(cuid())
+  name                String     @default("")
+  firstName           String?
+  lastName            String?
+  province            String?
+  city                String?
+  bio                 String?
+  avatarUrl           String?
+  phone               String?    @unique
+  phoneVerified       Boolean    @default(false)
+  email               String?    @unique
+  passwordHash        String?
+  role                String     @default("LEARNER")
+  emailVerified       Boolean    @default(false)
+  profileComplete     Boolean    @default(false)
+  /**
+   * Account status: ACTIVE (default), SUSPENDED (temporary), BANNED (permanent).
+   */
+  status              UserStatus @default(ACTIVE)
+  suspendedAt         DateTime?
+  /**
+   * Admin-provided reason stored when a user is suspended or banned.
+   */
+  suspendedReason     String?
+  /**
+   * DB-4 soft delete: set by the admin soft-delete endpoint. Rows with this
+   * flag are filtered from every read via the PrismaService extension and can
+   * never authenticate; the row (and its financial history, protected by the
+   * Restrict FKs on Order/Payment) remains for audit and reversal.
+   */
+  deletedAt           DateTime?
+  /**
+   * Per-moderator admin panel permissions (ADMIN role). Null → site default template.
+   */
+  adminPanelAccess    Json?
+  /**
+   * Two-factor authentication (AUTH-5): only staff (SUPER_ADMIN/ADMIN/custom staff) can enable.
+   */
+  twoFactorEnabled    Boolean    @default(false)
+  /**
+   * AES-256-GCM encrypted base32 secret; null until 2FA is confirmed.
+   */
+  twoFactorSecret     String?
+  /**
+   * RFC 3339 timestamp of the most recent successful TOTP step-up.
+   */
+  twoFactorVerifiedAt DateTime?
+  createdAt           DateTime   @default(now())
+  updatedAt           DateTime   @updatedAt
+
+  refreshTokens          RefreshToken[]
+  twoFactorRecoveryCodes TwoFactorRecoveryCode[]
+  assessments            Assessment[]
+  roadmaps               Roadmap[]
+  readinessTests         ReadinessTest[]
+  examAttempts           ExamAttempt[]
+  personalityResults     PersonalityResult[]
+  bootcampProfile        BootcampProfile?
+  challengeSubmissions   ChallengeSubmission[]
+  payments               Payment[]
+  orders                 Order[]
+  cart                   Cart?
+  entitlements           Entitlement[]
+  enrollments            Enrollment[]
+  lessonProgress         LessonProgress[]
+  courseExamAttempts     CourseExamAttempt[]
+  supportTickets         SupportTicket[]
+  ticketReplies          TicketReply[]
+  learnerMessages        LearnerMessage[]
+  learnerTodos           LearnerTodo[]
+  competitionRegs        CompetitionRegistration[]
+  wallet                 LearnerWallet?
+  passwordResetTokens    PasswordResetToken[]
+
+  @@index([status])
+  @@index([role, createdAt])
+}
+
+model PhoneOtp {
+  id         String    @id @default(cuid())
+  phone      String
+  codeHash   String
+  attempts   Int       @default(0)
+  expiresAt  DateTime
+  consumedAt DateTime?
+  createdAt  DateTime  @default(now())
+
+  @@index([phone])
+}
+
+/// Password reset flow tokens (AUTH-4). Only the SHA-256 digest is persisted;
+/// the raw token exists solely inside the emailed link and is single-use.
+model PasswordResetToken {
+  id        String    @id @default(cuid())
+  tokenHash String    @unique
+  userId    String
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime  @default(now())
+
+  @@index([userId])
+  @@index([expiresAt])
+}
+
+/// Two-factor recovery codes (AUTH-5). Only a bcrypt digest of each code is
+/// persisted; a code is consumed permanently on first successful use.
+model TwoFactorRecoveryCode {
+  id        String    @id @default(cuid())
+  userId    String
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  codeHash  String
+  usedAt    DateTime?
+  createdAt DateTime  @default(now())
+
+  @@index([userId])
+}
+
+model RefreshToken {
+  id        String   @id @default(cuid())
+  token     String   @unique
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+}
+
+enum ExamAttemptStatus {
+  IN_PROGRESS
+  PROCESSING
+  SUBMITTED
+  EXPIRED
+}
+
+enum CourseExamAttemptStatus {
+  IN_PROGRESS
+  PROCESSING
+  SUBMITTED
+  EXPIRED
+}
+
+model Assessment {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  answers   Json
+  createdAt DateTime @default(now())
+
+  roadmaps Roadmap[]
+
+  @@index([userId, createdAt])
+}
+
+model Roadmap {
+  id           String      @id @default(cuid())
+  userId       String
+  user         User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  assessmentId String?
+  assessment   Assessment? @relation(fields: [assessmentId], references: [id], onDelete: SetNull)
+  trackKey     String
+  trackName    String
+  modules      Json
+  level        String
+  profile      Json
+  pricing      Json
+  enrolled     Boolean     @default(false)
+  paymentId    String?
+  createdAt    DateTime    @default(now())
+
+  @@index([userId, createdAt])
+}
+
+model ReadinessTest {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  scores      Json
+  percentages Json
+  average     Int
+  passed      Boolean
+  verdict     Json
+  paymentId   String?
+  createdAt   DateTime @default(now())
+
+  @@index([userId, createdAt])
+}
+
+/**
+ * Mini-IPIP Big Five personality result (Donnellan et al., 2006).
+ */
+model PersonalityResult {
+  id         String   @id @default(cuid())
+  userId     String
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  instrument String   @default("mini-ipip")
+  answers    Json
+  scores     Json
+  createdAt  DateTime @default(now())
+
+  @@index([userId, createdAt])
+}
+
+/**
+ * Server-graded timed digital readiness exam attempt.
+ */
+model ExamAttempt {
+  id               String            @id @default(cuid())
+  userId           String
+  user             User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  roadmapId        String?
+  blueprintVersion String
+  status           ExamAttemptStatus @default(IN_PROGRESS)
+  questionIds      Json
+  /**
+   * EXAM-3: immutable snapshot of the full question content (incl. grading keys)
+   * taken when the attempt started. Grading always uses this snapshot so admin
+   * edits to the live question bank can never change the meaning of a question
+   * mid-attempt. Null on legacy attempts created before this column — those
+   * fall back to resolving the question IDs against the live bank.
+   */
+  questions        Json?
+  answers          Json              @default("{}")
+  startedAt        DateTime          @default(now())
+  endsAt           DateTime
+  submittedAt      DateTime?
+  average          Int?
+  passed           Boolean?
+  domainScores     Json?
+  percentages      Json?
+  outcome          Json?
+  verdict          Json?
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
+
+  @@index([userId, status])
+}
+
+model BootcampProfile {
+  id     String @id @default(cuid())
+  userId String @unique
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  rank   Int    @default(12)
+  points Int    @default(340)
+}
+
+model ChallengeSubmission {
+  id               String    @id @default(cuid())
+  userId           String
+  user             User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  /**
+   * The challenge this submission is for — the DTO's challengeId (or default slug) is resolved and FK-enforced server-side.
+   */
+  challengeId      String
+  challenge        Challenge @relation(fields: [challengeId], references: [id], onDelete: Cascade)
+  /**
+   * Challenge version snapshot used for scoring (matches the challenge row's version at submit time).
+   */
+  challengeVersion Int       @default(1)
+  /**
+   * Source language; always "js" for the seeded bootcamp challenge.
+   */
+  language         String    @default("js")
+  code             String
+  score            Int
+  topScore         Boolean
+  result           Json
+  status           String    @default("scored")
+  executionTimeMs  Int?
+  memoryUsageKb    Int?
+  createdAt        DateTime  @default(now())
+
+  @@index([challengeId, createdAt])
+  @@index([userId, createdAt])
+}
+
+model Payment {
+  id          String        @id @default(cuid())
+  userId      String
+  /**
+   * DB-4: Restrict — payments outlive any user-deletion attempt.
+   */
+  user        User          @relation(fields: [userId], references: [id], onDelete: Restrict)
+  orderId     String?       @unique
+  order       Order?        @relation(fields: [orderId], references: [id], onDelete: SetNull)
+  productType ProductType
+  productRef  String?
+  amountCents Int
+  currency    String        @default("irr")
+  status      PaymentStatus @default(PENDING)
+  /**
+   * Active provider id at checkout time (dev / zarinpal / idpay / stripe).
+   */
+  provider    String?
+  stripeId    String?
+  gatewayRef  String?
+  metadata    Json?
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  walletTransaction WalletTransaction?
+
+  @@index([userId, status])
+  @@index([stripeId])
+  @@index([gatewayRef])
+}
+
+/**
+ * Exactly-once receipt of provider webhook events (Stripe replays / duplicate
+ * deliveries). eventId is unique — a second delivery of the same event is
+ * skipped. Failed processing deletes the row so the provider retry reprocesses,
+ * guaranteeing at-least-once delivery with exactly-once side effects.
+ */
+model PaymentWebhookEvent {
+  id          String   @id @default(cuid())
+  eventId     String   @unique
+  provider    String
+  eventType   String
+  payload     Json
+  processedAt DateTime @default(now())
+
+  @@index([provider, processedAt])
+}
+
+model Order {
+  id            String      @id @default(cuid())
+  userId        String
+  /**
+   * DB-4: financial records must never vanish via a user deletion — the FK is
+   * Restrict, so a user with order history can only be soft-deleted.
+   */
+  user          User        @relation(fields: [userId], references: [id], onDelete: Restrict)
+  status        OrderStatus @default(PENDING)
+  invoiceNumber String?     @unique
+  subtotalCents Int
+  discountCents Int         @default(0)
+  totalCents    Int
+  currency      String      @default("irr")
+  source        OrderSource @default(DIRECT)
+  metadata      String?
+  items         OrderItem[]
+  payment       Payment?
+  invoice       Invoice?
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+
+  @@index([userId, createdAt])
+}
+
+model OrderItem {
+  id              String      @id @default(cuid())
+  orderId         String
+  order           Order       @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  productType     ProductType
+  productRef      String
+  title           String
+  thumbnail       String?
+  instructor      String?
+  unitPriceCents  Int
+  discountCents   Int         @default(0)
+  finalPriceCents Int
+  quantity        Int         @default(1)
+  courseId        String?
+}
+
+model Invoice {
+  id            String   @id @default(cuid())
+  orderId       String   @unique
+  order         Order    @relation(fields: [orderId], references: [id], onDelete: Restrict)
+  invoiceNumber String   @unique
+  issuedAt      DateTime @default(now())
+  buyerName     String
+  buyerEmail    String?
+  buyerPhone    String?
+  currency      String   @default("irr")
+  subtotalCents Int
+  discountCents Int      @default(0)
+  totalCents    Int
+  /**
+   * JSON-serialized OrderItemResponse[].
+   */
+  lineItems     Json
+  createdAt     DateTime @default(now())
+}
+
+model Cart {
+  id        String     @id @default(cuid())
+  userId    String     @unique
+  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  items     CartItem[]
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+}
+
+model CartItem {
+  id        String   @id @default(cuid())
+  cartId    String
+  cart      Cart     @relation(fields: [cartId], references: [id], onDelete: Cascade)
+  courseId  String
+  course    Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@unique([cartId, courseId])
+  @@index([courseId])
+}
+
+model Entitlement {
+  id           String                  @id @default(cuid())
+  userId       String
+  user         User                    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  resourceType EntitlementResourceType
+  resourceId   String
+  source       EntitlementSource
+  createdAt    DateTime                @default(now())
+
+  @@unique([userId, resourceType, resourceId])
+}
+
+model Course {
+  id            String   @id @default(cuid())
+  slug          String   @unique
+  title         String
+  description   String
+  /**
+   * English description for en locale (null → fall back to `description`).
+   */
+  descriptionEn String?
+  icon          String   @default("book")
+  trackKey      String?
+  sortOrder     Int      @default(0)
+  published     Boolean  @default(true)
+  /**
+   * "Coming soon" courses stay visible in listings but are locked with no content access.
+   */
+  comingSoon    Boolean  @default(false)
+  createdAt     DateTime @default(now())
+
+  lessons     Lesson[]
+  courseExams CourseExam[]
+  enrollments Enrollment[]
+  attachments CourseAttachment[]
+  tickets     SupportTicket[]
+  cartItems   CartItem[]
+}
+
+enum CourseExamKind {
+  MIDTERM
+  FINAL
+}
+
+/**
+ * An exam created by admins inside a course, placed between lessons.
+ */
+model CourseExam {
+  id            String         @id @default(cuid())
+  courseId      String
+  course        Course         @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  title         String
+  description   String         @default("")
+  passScore     Int            @default(60)
+  durationMin   Int            @default(15)
+  published     Boolean        @default(true)
+  sortOrder     Int            @default(0)
+  /**
+   * Kind of assessment: mid-term (mid lesson) or final.
+   */
+  kind          CourseExamKind @default(FINAL)
+  /**
+   * Last (anchor) lesson → exam appears after this lesson. Null = end of course.
+   */
+  afterLessonId String?
+  afterLesson   Lesson?        @relation(fields: [afterLessonId], references: [id], onDelete: SetNull)
+  /**
+   * Payload of CourseExamQuestion[] (server-side grading keys included).
+   */
+  questions     Json           @default("[]")
+  /**
+   * EXAM-4: maximum graded attempts a learner may take (1–10). The default
+   * 3 keeps a reasonable retry policy; admins can tighten or loosen per exam.
+   * Attempts whose status is IN_PROGRESS/PROCESSING/EXPIRED do not count —
+   * only SUBMITTED ones consume an attempt.
+   */
+  maxAttempts   Int            @default(3)
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+
+  attempts CourseExamAttempt[]
+
+  @@index([courseId, sortOrder])
+}
+
+model CourseExamAttempt {
+  id          String                  @id @default(cuid())
+  examId      String
+  exam        CourseExam              @relation(fields: [examId], references: [id], onDelete: Cascade)
+  userId      String
+  user        User                    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  status      CourseExamAttemptStatus @default(IN_PROGRESS)
+  /**
+   * EXAM-3: immutable snapshot of the exam's question payload (CourseExamQuestion[],
+   * grading keys included) taken when the attempt started, so admin edits to the
+   * exam (or its questions) cannot alter grading for a live attempt. Null on legacy
+   * attempts created before this column — those fall back to the current exam
+   * payload (previous behavior).
+   */
+  questions   Json?
+  startedAt   DateTime                @default(now())
+  submittedAt DateTime?
+  answers     Json?
+  score       Int?
+  passed      Boolean?
+
+  @@index([examId])
+  @@index([userId, examId])
+}
+
+model Lesson {
+  id          String  @id @default(cuid())
+  courseId    String
+  course      Course  @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  slug        String
+  title       String
+  content     String
+  /**
+   * Packed English content (markdown + playground); null → fall back to `content`.
+   */
+  contentEn   String?
+  videoUrl    String?
+  durationMin Int     @default(10)
+  sortOrder   Int     @default(0)
+  /**
+   * "Coming soon" lessons stay visible in listings but are locked with no content access.
+   */
+  comingSoon  Boolean @default(false)
+
+  progress LessonProgress[]
+
+  examsAfter CourseExam[]
+
+  @@unique([courseId, slug])
+  @@index([courseId, sortOrder])
+}
+
+model Enrollment {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  courseId  String
+  course    Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@unique([userId, courseId])
+}
+
+model LessonProgress {
+  id          String    @id @default(cuid())
+  userId      String
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  lessonId    String
+  lesson      Lesson    @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+  completed   Boolean   @default(false)
+  completedAt DateTime?
+
+  @@unique([userId, lessonId])
+  @@index([lessonId])
+}
+
+model Challenge {
+  id          String   @id @default(cuid())
+  slug        String   @unique
+  title       String
+  description String
+  points      Int      @default(120)
+  startsAt    DateTime
+  endsAt      DateTime
+  active      Boolean  @default(true)
+  starterCode String   @default("")
+  /**
+   * Monotonic content version — submissions pin the version they were scored against.
+   */
+  version     Int      @default(1)
+  createdAt   DateTime @default(now())
+
+  submissions ChallengeSubmission[]
+}
+
+model EmailLog {
+  id        String   @id @default(cuid())
+  userId    String?
+  to        String
+  subject   String
+  template  String
+  status    String
+  createdAt DateTime @default(now())
+}
+
+model SiteSetting {
+  key       String   @id
+  value     Json
+  updatedAt DateTime @updatedAt
+}
+
+/**
+ * Editable learner test banks (personality / assessment / readiness).
+ */
+model TestBank {
+  id        String   @id
+  payload   Json
+  updatedAt DateTime @updatedAt
+  updatedBy String?
+}
+
+model ContactMessage {
+  id        String    @id @default(cuid())
+  name      String
+  email     String
+  subject   String
+  message   String
+  readAt    DateTime?
+  createdAt DateTime  @default(now())
+}
+
+enum TicketStatus {
+  OPEN
+  IN_PROGRESS
+  RESOLVED
+  CLOSED
+}
+
+enum TicketPriority {
+  LOW
+  NORMAL
+  HIGH
+}
+
+/**
+ * Learner support tickets (course-scoped or general).
+ */
+model SupportTicket {
+  id        String         @id @default(cuid())
+  userId    String
+  user      User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  courseId  String?
+  course    Course?        @relation(fields: [courseId], references: [id], onDelete: SetNull)
+  subject   String
+  body      String
+  /**
+   * Optional support category label (technical / admin / education / finance).
+   */
+  category  String?
+  status    TicketStatus   @default(OPEN)
+  priority  TicketPriority @default(NORMAL)
+  createdAt DateTime       @default(now())
+  updatedAt DateTime       @updatedAt
+
+  replies     TicketReply[]
+  attachments TicketAttachment[]
+
+  @@index([userId, createdAt])
+}
+
+enum WalletTxnType {
+  CREDIT
+  DEBIT
+}
+
+/**
+ * Prepaid learner wallet (IRR).
+ */
+model LearnerWallet {
+  id           String   @id @default(cuid())
+  userId       String   @unique
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  /**
+   * Balance in Iranian Rials.
+   */
+  balanceCents Int      @default(0)
+  currency     String   @default("irr")
+  /**
+   * Last 4 digits shown on the dashboard card UI.
+   */
+  cardLast4    String   @default("1234")
+  /**
+   * Display-only expiry MM/YY for the digital card.
+   */
+  expiresLabel String   @default("06/27")
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  transactions WalletTransaction[]
+}
+
+model WalletTransaction {
+  id          String        @id @default(cuid())
+  walletId    String
+  wallet      LearnerWallet @relation(fields: [walletId], references: [id], onDelete: Cascade)
+  type        WalletTxnType
+  /**
+   * Absolute amount in IRR (sign inferred from type).
+   */
+  amountCents Int
+  description String
+  /**
+   * FK to the Payment that produced this ledger entry (one-to-one).
+   */
+  paymentId   String?       @unique
+  payment     Payment?      @relation(fields: [paymentId], references: [id], onDelete: SetNull)
+  createdAt   DateTime      @default(now())
+
+  @@index([walletId, createdAt])
+}
+
+model TicketReply {
+  id        String        @id @default(cuid())
+  ticketId  String
+  ticket    SupportTicket @relation(fields: [ticketId], references: [id], onDelete: Cascade)
+  authorId  String
+  author    User          @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  body      String
+  isStaff   Boolean       @default(false)
+  createdAt DateTime      @default(now())
+
+  attachments TicketAttachment[]
+
+  @@index([ticketId, createdAt])
+}
+
+/**
+ * File/image attachments on tickets or ticket replies.
+ */
+model TicketAttachment {
+  id         String         @id @default(cuid())
+  ticketId   String?
+  ticket     SupportTicket? @relation(fields: [ticketId], references: [id], onDelete: Cascade)
+  replyId    String?
+  reply      TicketReply?   @relation(fields: [replyId], references: [id], onDelete: Cascade)
+  fileName   String
+  storedName String
+  mimeType   String
+  sizeBytes  Int
+  createdAt  DateTime       @default(now())
+
+  @@index([ticketId])
+  @@index([replyId])
+}
+
+/**
+ * Admin → learner inbox messages.
+ */
+model LearnerMessage {
+  id        String    @id @default(cuid())
+  userId    String
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  subject   String
+  body      String
+  readAt    DateTime?
+  createdBy String?
+  createdAt DateTime  @default(now())
+
+  @@index([userId, createdAt])
+}
+
+/**
+ * Todo list on the learner dashboard.
+ */
+model LearnerTodo {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title     String
+  done      Boolean  @default(false)
+  sortOrder Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId, sortOrder])
+}
+
+model Competition {
+  id          String   @id @default(cuid())
+  slug        String   @unique
+  title       String
+  description String
+  startsAt    DateTime
+  endsAt      DateTime
+  active      Boolean  @default(true)
+  createdAt   DateTime @default(now())
+
+  registrations CompetitionRegistration[]
+}
+
+model CompetitionRegistration {
+  id            String      @id @default(cuid())
+  userId        String
+  user          User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  competitionId String
+  competition   Competition @relation(fields: [competitionId], references: [id], onDelete: Cascade)
+  createdAt     DateTime    @default(now())
+
+  @@unique([userId, competitionId])
+}
+
+model CourseAttachment {
+  id        String   @id @default(cuid())
+  courseId  String
+  course    Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  title     String
+  fileName  String
+  fileUrl   String
+  mimeType  String?
+  sizeBytes Int?
+  sortOrder Int      @default(0)
+  createdAt DateTime @default(now())
+
+  @@index([courseId, sortOrder])
+}
+
+/**
+ * Immutable admin audit trail. Written by AdminAuditService on sensitive admin
+ * mutations. There is intentionally NO update/delete API or Prisma cascade —
+ * audit history must not be modifiable from the panel.
+ */
+model AdminAuditLog {
+  id         String   @id @default(cuid())
+  actorId    String?
+  actorName  String   @default("")
+  actorRole  String   @default("")
+  action     String
+  section    String
+  entityType String
+  entityId   String?
+  /**
+   * Human-readable target label (course title, user email, …).
+   */
+  target     String   @default("")
+  before     Json?
+  after      Json?
+  reason     String?
+  ip         String?
+  userAgent  String?
+  requestId  String?
+  createdAt  DateTime @default(now())
+
+  @@index([createdAt])
+  @@index([actorId, createdAt])
+  @@index([section, action])
+  @@index([entityType, entityId])
+}

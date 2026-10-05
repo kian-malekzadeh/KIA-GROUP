@@ -1,0 +1,54 @@
+{
+  "name": "kia-group",
+  "version": "1.0.0",
+  "private": true,
+  "packageManager": "pnpm@11.19.0",
+  "description": "Kia Group — one ecosystem, six departments",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kian-malekzadeh/Kia-Academy.git"
+  },
+  "homepage": "https://github.com/kian-malekzadeh/Kia-Academy#readme",
+  "bugs": {
+    "url": "https://github.com/kian-malekzadeh/Kia-Academy/issues"
+  },
+  "scripts": {
+    "dev": "concurrently -n web,api -c blue,green \"pnpm --filter @kia-group/group dev\" \"pnpm --filter @kia-group/api dev\"",
+    "build:libs": "pnpm --filter @kia-group/permissions build && pnpm --filter @kia-group/brand build && pnpm --filter @kia-group/shared build",
+    "build": "pnpm build:libs && pnpm --filter @kia-group/api build && pnpm --filter @kia-group/group build",
+        "build:pages": "pnpm --filter @kia-group/shared build && export GITHUB_PAGES=true && export NEXT_BASE_PATH=/${PAGES_REPO_NAME:-Kia-Academy} && export NEXT_PUBLIC_APP_URL=https://kian-malekzadeh.github.io/${PAGES_REPO_NAME:-Kia-Academy} && export NEXT_PUBLIC_DEMO_MODE=true && pnpm --filter @kia-group/group build",
+    "start": "concurrently -n web,api -c blue,green \"pnpm --filter @kia-group/group start\" \"pnpm --filter @kia-group/api start:prod\"",
+    "lint": "pnpm -r lint",
+    "typecheck": "pnpm -r typecheck",
+    "format": "prettier --write \"**/*.{ts,tsx,js,mjs,json,md,css}\"",
+    "format:check": "prettier --check \"**/*.{ts,tsx,js,mjs,json,md,css}\"",
+    "test": "pnpm build:libs && pnpm -r test",
+    "test:e2e": "pnpm --filter @kia-group/group test:e2e",
+    "db:generate": "pnpm --filter @kia-group/api prisma:generate",
+    "db:migrate": "pnpm --filter @kia-group/api prisma:migrate",
+    "db:migrate:deploy": "pnpm --filter @kia-group/api prisma:migrate:deploy",
+    "db:seed": "pnpm --filter @kia-group/api prisma:seed",
+    "docker:db": "docker compose up -d postgres",
+    "docker:db:down": "docker compose down",
+    "docker:db:reset": "docker compose down -v && docker compose up -d postgres",
+    "docker:build": "docker compose --profile full build",
+    "docker:up": "docker compose --profile full up -d",
+    "docker:down": "docker compose --profile full down",
+    "docker:logs": "docker compose --profile full logs -f",
+    "docker:redis": "docker compose --profile full-redis up -d redis",
+    "docker:setup": "node -e \"const fs=require('fs'); if(!fs.existsSync('.env.docker')){fs.copyFileSync('.env.docker.example','.env.docker'); console.log('Created .env.docker');} else {console.log('.env.docker already exists');}\"",
+    "postinstall": "pnpm db:generate && pnpm build:libs"
+  },
+  "engines": {
+    "node": ">=22.13"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "concurrently": "^10.0.4",
+    "eslint": "^10.9.1",
+    "prettier": "^3.9.6",
+    "typescript": "5.9.3",
+    "typescript-eslint": "^8.68.0"
+  }
+}

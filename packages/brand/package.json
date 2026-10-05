@@ -1,0 +1,25 @@
+{
+  "name": "@kia-group/brand",
+  "version": "1.0.0",
+  "private": true,
+  "description": "KIA GROUP design tokens — one colour per brand, shared by every department",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./brands.css": "./css/brands.css"
+  },
+  "scripts": {
+    "build": "tsc",
+    "lint": "eslint src --config ../../eslint.config.mjs",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run"
+  },
+  "devDependencies": {
+    "typescript": "^5.8.3",
+    "vitest": "^4.1.10"
+  }
+}
