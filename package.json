@@ -7,11 +7,11 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/kian-malekzadeh/Kia-Academy.git"
+    "url": "https://github.com/kian-malekzadeh/KIA-GROUP.git"
   },
-  "homepage": "https://github.com/kian-malekzadeh/Kia-Academy#readme",
+  "homepage": "https://github.com/kian-malekzadeh/KIA-GROUP#readme",
   "bugs": {
-    "url": "https://github.com/kian-malekzadeh/Kia-Academy/issues"
+    "url": "https://github.com/kian-malekzadeh/KIA-GROUP/issues"
   },
   "scripts": {
     "dev": "concurrently -n web,api -c blue,green \"pnpm --filter @kia-group/group dev\" \"pnpm --filter @kia-group/api dev\"",
