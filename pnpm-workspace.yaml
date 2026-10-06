@@ -25,3 +25,5 @@ overrides:
   multer: '>=2.4.0'
   nodemailer: '>=9.1.1'
   qs: '>=6.15.4'
+  proxy-addr: '>=2.0.8'
+  source-map-js: '>=1.2.2'

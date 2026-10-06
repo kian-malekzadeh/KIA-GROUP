@@ -83,3 +83,36 @@ flood caps, bcrypt cost 12, throttled auth endpoints.
 Phase 1 auth/session revocation → Phase 3 payment state machine & webhook
 idempotency → Phase 5 exam integrity → Phase 6 challenge integrity →
 Phase 4 database integrity → then P1 phases per the master plan.
+
+## Session 2026-10-06 — master re-audit
+
+Full re-verification of every claim above against the code (not the docs),
+baseline → fix → re-verify cycle. Baseline at session start: `pnpm lint` ✅ ·
+`pnpm typecheck` ✅ · `pnpm test` 361 ✅ · `pnpm build` ✅ · `pnpm test:e2e`
+**5/9 failed (pre-existing)** · `pnpm audit --prod` **2 vulnerabilities
+(1 critical + 1 high) — pre-existing**.
+
+| ID | Severity | Finding | Status |
+| --- | --- | --- | --- |
+| DEP-3 | P0 | `proxy-addr <2.0.8` (critical, IPv4-mapped-IPv6 trust-subnet IP spoofing) newly reachable in the prod tree via `@nest-lab/throttler-storage-redis → @nestjs/core → platform-express → express`; the API sets `trust proxy` when `TRUST_PROXY=true`, so `req.ip`/rate-limit keys could be spoofed behind a proxy | **fixed** — workspace override `proxy-addr: '>=2.0.8'` in `pnpm-workspace.yaml` (same convention as the 17 overrides from 2026-09-29); `pnpm audit --prod --audit-level=high` → 0 |
+| DEP-4 | P1 | `source-map-js <1.2.2` (high, event-loop DoS via indexed source-map offsets) newly reachable in the prod tree via `@prisma/client → prisma → … → magicast` and `next → postcss` | **fixed** — workspace override `source-map-js: '>=1.2.2'`; audit clean |
+| EVT-1 | P2 | `CompetitionsService.register` did find-then-create with no P2002 handling: two concurrent registrations both passed the pre-check and the DB unique constraint turned the loser into a raw Prisma error (HTTP 500) instead of the intended 409; the domain event could also announce a registration that never persisted | **fixed** — the `userId+competitionId` unique constraint is now the authoritative single-winner: P2002 → `ConflictException('Already registered')`, loser publishes no event; regression suite `competitions.service.spec.ts` (6 specs: happy path, 404 inactive/unknown, ended, duplicate, **race**, non-P2002 rethrow) |
+| QA-2 | P2 | `e2e/learner-journey.spec.ts` asserted the **pre-rebuild** landing (`Learning path` / `Material Studio` CTAs, email-signup `/register`) — 5/9 E2E failures were stale expectations against the approved UX-10/UX-12/AUTH-6 design, not UI bugs | **fixed** — spec updated to pin the approved UI: tagline hero, `Sign in / Sign up` → `/education`, email door → `/login`, `/register` → phone-only OTP redirect, fa/ع RTL, cookie locale persistence, 400px compact CTAs; UI untouched (UI freeze respected). E2E now **9/9 green** |
+| DOC-4 | P3 | `AGENTS.md` route table described `/` as “Material + Education CTAs” — stale since the minimal-guest-landing change | **fixed** — row now reflects the actual auth-only landing |
+
+Re-verified in this session (evidence, not docs): OTP hashing/expiry/single-use
+attempt-caps + phone flood windows + masked logging; refresh rotation via atomic
+digest-claim delete; HttpOnly/Secure/SameSite cookie; suspended-user rejection on
+every request; 2FA challenge flow; payment state machine + atomic single-winner
+completion claim + `PaymentWebhookEvent` idempotency + authority-proof public
+callbacks; Zarinpal server-side verify (100/101), simulator blocked in production;
+media signed-token + `resolveUnderRoot` path-traversal guards; avatar magic-byte
+sniffing; admin `AdminAccess` guards + audit records; demo mode gated
+(`isDemoMode` requires explicit `NEXT_PUBLIC_DEMO_MODE=true` and loses to any
+`NEXT_PUBLIC_API_URL`); 44 models / 19 migrations applied cleanly to a fresh
+Postgres 16; seed OK; `pnpm audit --prod` 0 vulnerabilities.
+
+**Final gates (2026-10-06):** lint ✅ · typecheck ✅ · test **367/367** ✅ ·
+build (357 static pages) ✅ · **E2E 9/9 ✅** · audit 0 vulns ✅ ·
+gitleaks/CodeQL run in `security.yml` (CI-side; gitleaks not installed locally).
+No known regressions: baseline failures all FIXED (e2e 5→0, audit 2→0).

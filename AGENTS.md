@@ -36,7 +36,7 @@ CSS side — never hard-code a department hex.
 
 | Route | Purpose |
 | --- | --- |
-| `/` | Minimal Persian landing (Material + Education CTAs) — **no site header** for guests |
+| `/` | Minimal Persian landing («ورود / ثبت‌نام» → `/education` + email sign-in → `/login`) — **no site header** for guests |
 | `/material` | Material Studio (ported, modular under `apps/group/src/features/material`) |
 | `/education` | Iranian phone OTP → profile → assessment gate (always phone-first; never auto-skips OTP) |
 | `/assessment` | First goal wizard (requires complete profile) → then free readiness test |

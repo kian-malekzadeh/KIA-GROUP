@@ -60,9 +60,20 @@ export class CompetitionsService {
       throw new ConflictException('Already registered');
     }
 
-    await this.prisma.competitionRegistration.create({
-      data: { userId, competitionId: competition.id },
-    });
+    try {
+      await this.prisma.competitionRegistration.create({
+        data: { userId, competitionId: competition.id },
+      });
+    } catch (err) {
+      // Race: two concurrent registrations both pass the findUnique check
+      // above; the DB unique constraint (userId, competitionId) is the
+      // authoritative single-winner. Translate P2002 into the same clean 409
+      // instead of leaking a raw Prisma error as HTTP 500.
+      if ((err as { code?: string } | null)?.code === 'P2002') {
+        throw new ConflictException('Already registered');
+      }
+      throw err;
+    }
 
     // Domain event: Events announces the registration so other departments
     // (notifications, community) can react without importing Events services.
