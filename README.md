@@ -27,8 +27,8 @@
 
 Kia Group is a production-grade platform for Iranian talent, built around six
 departments: KIA Academy (learning), KIA Work (freelancing and hiring), KIA Material
-(design assets), KIA Events (contests, bootcamps, webinars), KIA Community (people)
-and KIA Labs (research and product).
+(design assets), KIA Event (contests, bootcamps, webinars), KIA Community (people)
+and KIA Lab (research and product).
 Guests land on a minimal Persian hero, explore **Material Studio**, then follow a guided
 journey: phone OTP → profile → free goal assessment → free readiness test → personalized
 roadmap → paid bundle checkout → lesson player. The learner experience is entirely
@@ -77,7 +77,7 @@ Results (/readiness/results) ─► Roadmap (/roadmap) ──► Checkout ──
 
 | Layer | Technology |
 | --- | --- |
-| Frontend | Next.js 16 (App Router), React 19, TypeScript, lucide-react, local Persian fonts (YekanBakh/Pelak) |
+| Frontend | Next.js 16 (App Router), React 19, TypeScript, lucide-react, local Persian brand font (Pelak FA) |
 | Backend | NestJS 11, Passport JWT, class-validator, @nestjs/throttler, helmet |
 | Database | PostgreSQL 16 + Prisma ORM 6 (single baseline migration) |
 | Shared | `@kia-group/shared` — types, banks, grading, entitlements, validators (built first) |
@@ -104,7 +104,7 @@ kia-group/
 │       │                     #   sms · contact · health · support · commerce · search
 │       ├── src/academy/      # KIA Academy: courses · exams · assessments · readiness ·
 │       │                     #   roadmaps · progress · bootcamp · test banks
-│       ├── src/events/       # KIA Events: competitions · challenges
+│       ├── src/events/       # KIA Event: competitions · challenges
 │       ├── src/common/       # guards · rate limit · domain events
 │       └── prisma/
 │           ├── schema.prisma       # 50+ models, domain-ownership map in header
@@ -124,11 +124,11 @@ kia-group/
 | --- | --- | --- | --- |
 | KIA GROUP | `#FFC864` | `--group-gold` (reserved) | platform |
 | KIA Academy | `#6464FF` | `--dept-academy` | `apps/api/src/academy/` · `app/(academy)` |
-| KIA Work | `#6492FF` | `--dept-work` | `app/(work)` (domain module TODO) |
-| KIA Material | `#148165` | `--dept-material` | `app/(material)` (domain module TODO) |
-| KIA Labs | `#28C793` | `--dept-labs` | `app/(labs)` (domain module TODO) |
-| KIA Events | `#E32B1B` | `--dept-events` | `apps/api/src/events/` · `app/(events)` |
-| KIA Community | `#FF7344` | `--dept-community` | `app/(community)` (domain module TODO) |
+| KIA Work | `#1687FF` | `--dept-work` | `app/(work)` → `/freelance` (frontend-only today) |
+| KIA Material | `#20BFA9` | `--dept-material` | `app/(material)` → Material Studio (frontend feature, no Nest domain) |
+| KIA Lab | `#19C37D` | `--dept-labs` | `app/(labs)` (coming-soon page, no backend domain yet) |
+| KIA Event | `#FF8A3D` | `--dept-events` | `apps/api/src/events/` · `app/(events)` |
+| KIA Community | `#D946EF` | `--dept-community` | `app/(community)` (coming-soon page, no backend domain yet) |
 
 Colours are defined **once** in [`packages/brand`](packages/brand) and pinned by
 tests on both sides (TypeScript tokens *and* the stylesheet that consumes them).

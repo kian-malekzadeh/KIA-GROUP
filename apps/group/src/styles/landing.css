@@ -7,6 +7,15 @@
   padding-bottom: var(--space-section);
 }
 
+/* The guest landing is a single screen: `.site-main--guest` already reserves
+   100vh and `.landing-intro` fills it, so this section's trailing padding was
+   the only thing pushing the page past the fold and creating a scrollbar on
+   desktop. Drop it here only — the post-auth landing has real content below
+   the fold and still needs the spacing. */
+.site-main--guest .landing {
+  padding-bottom: 0;
+}
+
 /* --- first viewport: hero + doors --------------------------------------- */
 .landing-intro {
   position: relative;
@@ -64,18 +73,29 @@
   overflow: visible;
 }
 
+/* The hero promise is the brand tagline, not a marketing sentence: it reads
+   as a single line, so it must not inherit the 25ch measure that wrapped a
+   two-line headline. Sized down from `--fs-display` so the whole tagline
+   sits on one line next to the wordmark. */
 .landing-title {
   margin-top: var(--space-6);
-  max-width: 25ch;
   font-family: var(--font-pelak-stack);
-  font-size: var(--fs-display);
+  font-size: clamp(1.75rem, 4vw, 3rem);
   font-weight: 800;
   letter-spacing: -0.035em;
-  line-height: 1.08;
+  line-height: 1.15;
   color: var(--text);
+  white-space: nowrap;
 }
 
-/* Beat the global RTL h1 → Yekan rule so the hero stays on Pelak. */
+/* Too narrow to hold the tagline on one line — wrap rather than overflow. */
+@media (max-width: 640px) {
+  .landing-title {
+    white-space: normal;
+  }
+}
+
+/* Override the global RTL h1 leading so the hero keeps its display spacing. */
 [dir='rtl'] .landing-title,
 [lang='fa'] .landing-title {
   font-family: var(--font-pelak-stack);

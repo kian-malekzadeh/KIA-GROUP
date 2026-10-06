@@ -20,11 +20,11 @@ describe('KIA GROUP brand tokens', () => {
     expect(GROUP_COLOR).toBe('#FFC864');
     expect(Object.fromEntries(BRAND_TOKENS.map((t) => [t.slug, t.color]))).toEqual({
       academy: '#6464FF',
-      work: '#6492FF',
-      material: '#148165',
-      labs: '#28C793',
-      events: '#E32B1B',
-      community: '#FF7344',
+      work: '#1687FF',
+      material: '#20BFA9',
+      labs: '#19C37D',
+      events: '#FF8A3D',
+      community: '#D946EF',
     });
   });
 
@@ -46,7 +46,7 @@ describe('KIA GROUP brand tokens', () => {
   });
 
   it('resolves department colours by slug and rejects unknown slugs', () => {
-    expect(departmentColor('events')).toBe('#E32B1B');
+    expect(departmentColor('events')).toBe('#FF8A3D');
     expect(() => departmentColor('nope' as never)).toThrow(/Unknown department/);
   });
 

@@ -139,7 +139,7 @@ describe('Kia Group departments', () => {
       faDoors.eventsTitle,
       faDoors.communityTitle,
       faDoors.labsTitle,
-    ]).toEqual(['کیا آکادمی', 'کیا ورک', 'کیا متریال', 'کیا ایونتس', 'کیا کامیونیتی', 'کیا لبز']);
+    ]).toEqual(['کیا آکادمی', 'کیا ورک', 'کیا متریال', 'کیا ایونت', 'کیا کامیونیتی', 'کیا لب']);
     expect([
       enDoors.academyTitle,
       enDoors.workTitle,
@@ -147,7 +147,7 @@ describe('Kia Group departments', () => {
       enDoors.eventsTitle,
       enDoors.communityTitle,
       enDoors.labsTitle,
-    ]).toEqual(['KIA Academy', 'KIA Work', 'KIA Material', 'KIA Events', 'KIA Community', 'KIA Labs']);
+    ]).toEqual(['KIA Academy', 'KIA Work', 'KIA Material', 'KIA Event', 'KIA Community', 'KIA Lab']);
     expect(faDoors.heading).toBe('دپارتمان‌های کیا گروه');
     expect(enDoors.heading).toBe('Kia Group departments');
   });

@@ -56,7 +56,9 @@ export default function HomePage() {
             {t('common.brand')}
           </span>
 
-          <h1 className="landing-title">{t('landing.heroTitle')}</h1>
+          {/* The brand tagline is the hero promise — one canonical string,
+              shared with the site wordmark and pinned by the brand suite. */}
+          <h1 className="landing-title">{t('common.tagline')}</h1>
           <p className="landing-body">{t('landing.heroBody')}</p>
 
           <div className="hero-actions landing-min-actions">

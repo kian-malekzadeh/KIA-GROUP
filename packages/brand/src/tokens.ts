@@ -13,8 +13,8 @@
  *   KIA Academy    #6464FF
  *   KIA Work       #6492FF
  *   KIA Material   #148165
- *   KIA Labs       #28C793
- *   KIA Events     #E32B1B
+ *   KIA Lab       #28C793
+ *   KIA Event     #E32B1B
  *   KIA Community  #FF7344
  *
  * `readableInk` (contrast.ts) chooses the on-fill ink by measurement, so a
@@ -70,7 +70,7 @@ export const BRAND_TOKENS: readonly BrandToken[] = [
     slug: 'work',
     name: 'KIA Work',
     nameFa: 'کیا ورک',
-    color: '#6492FF',
+    color: '#1687FF',
     cssVariable: '--dept-work',
     scope: 'Jobs, freelancing, hiring & projects',
   },
@@ -78,23 +78,23 @@ export const BRAND_TOKENS: readonly BrandToken[] = [
     slug: 'material',
     name: 'KIA Material',
     nameFa: 'کیا متریل',
-    color: '#148165',
+    color: '#20BFA9',
     cssVariable: '--dept-material',
     scope: 'Materials, resources, tools & style',
   },
   {
     slug: 'labs',
-    name: 'KIA Labs',
-    nameFa: 'کیا لبز',
-    color: '#28C793',
+    name: 'KIA Lab',
+    nameFa: 'کیا لب',
+    color: '#19C37D',
     cssVariable: '--dept-labs',
     scope: 'Technology, innovation, research & development',
   },
   {
     slug: 'events',
-    name: 'KIA Events',
-    nameFa: 'کیا ایونتس',
-    color: '#E32B1B',
+    name: 'KIA Event',
+    nameFa: 'کیا ایونت',
+    color: '#FF8A3D',
     cssVariable: '--dept-events',
     scope: 'Competitions, events, webinars, workshops & bootcamps',
   },
@@ -102,7 +102,7 @@ export const BRAND_TOKENS: readonly BrandToken[] = [
     slug: 'community',
     name: 'KIA Community',
     nameFa: 'کیا کامیونیتی',
-    color: '#FF7344',
+    color: '#D946EF',
     cssVariable: '--dept-community',
     scope: 'Community of users, professionals, students, teachers & employers',
   },

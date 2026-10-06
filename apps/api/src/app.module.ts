@@ -17,7 +17,7 @@ import { PrismaModule } from './prisma/prisma.module';
  *   src/group/    — the platform layer (identity, sessions, admin, settings,
  *                   media, email, SMS, support, billing/commerce, health)
  *   src/academy/  — the KIA Academy learning domain
- *   src/events/   — the KIA Events competitions & challenges domain
+ *   src/events/   — the KIA Event competitions & challenges domain
  *   src/common/   — cross-domain platform infrastructure (guards, rate
  *                   limiting, domain events, search)
  *
@@ -101,7 +101,7 @@ ConfigModule.forRoot({
     BootcampModule,
     TestBanksModule,
     ProgressModule,
-    // ── KIA Events (competitions & challenges) ────────────────────────────
+    // ── KIA Event (competitions & challenges) ────────────────────────────
     CompetitionsModule,
     ChallengesModule,
   ],

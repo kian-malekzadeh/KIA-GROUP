@@ -8,7 +8,7 @@ import { DEPARTMENTS, departmentForPathname } from '@/components/brand/departmen
 /**
  * The rail, personalised per department (UX-27).
  *
- * Opening KIA Labs puts that department's mark, colour and name in the rail
+ * Opening KIA Lab puts that department's mark, colour and name in the rail
  * instead of the parent group's, with «KIA GROUP» left underneath. Three things
  * could quietly break that, so they are pinned here:
  *

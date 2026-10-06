@@ -118,7 +118,7 @@
   display: block;
   font-size: var(--fs-micro);
   color: var(--text-dim);
-  font-family: var(--font-yekanbakh);
+  font-family: var(--font-fa);
 }
 
 .mini-cart-total {
@@ -210,7 +210,7 @@
   gap: var(--space-1);
   justify-items: end;
   font-size: var(--fs-xs);
-  font-family: var(--font-yekanbakh);
+  font-family: var(--font-fa);
 }
 
 .cart-item-prices .price-strike {

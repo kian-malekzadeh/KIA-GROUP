@@ -123,7 +123,7 @@
   color: var(--progress);
 }
 
-/* Score numerals: Yekan Bakh for Persian digits, mono stack for Latin/LTR. */
+/* Score numerals: Pelak FA for Persian digits, mono stack for Latin/LTR. */
 .tile .t-score.mono,
 .tile .t-score.mono.ltr-isolate {
   font-family: var(--font-fa), var(--font-mono), ui-monospace, monospace;
@@ -341,7 +341,7 @@
   margin-top: 0;
 }
 
-/* KIA Community and KIA Labs — the two departments added with the Kia Group
+/* KIA Community and KIA Lab — the two departments added with the Kia Group
    rebrand. Both are one coming-soon tile wide, so the grid must not stretch it
    across the full two-column track the other department pages use. */
 .community-page__head,

@@ -115,10 +115,10 @@ describe('department colours', () => {
     }
   });
 
-  it('gives KIA Academy indigo and KIA Events a red presence, as the brand specifies', () => {
+  it('gives KIA Academy indigo and KIA Event an orange presence, as the brand specifies', () => {
     // #6464ff reads as blue; it is also the long-standing academy hue, so the
     // department keeps its identity through the rebrand. Events carries the
-    // official red — the only department allowed near danger territory.
+    // official orange — distinct from the parent gold.
     const [, r, g, b] = /^#(..)(..)(..)$/.exec(deptColour('academy')) ?? [];
     const [red, green, blue] = [r, g, b].map((n) => parseInt(n, 16));
     expect(blue).toBeGreaterThan(red);

@@ -85,9 +85,8 @@ export const en = {
   },
   landing: {
     eyebrow: 'Kia Group',
-    heroTitle: 'Learn, design, and grow — in one place.',
     heroBody:
-      'Kia Group helps you explore design materials and start a guided learning journey tailored to your goals.',
+      'Kia Group is one integrated ecosystem, bringing education, work, materials, innovation, events and community together in a single place.',
     ctaMaterial: 'Material Studio',
     ctaEducation: 'Start learning path',
     ctaContact: 'Contact us',
@@ -258,7 +257,7 @@ export const en = {
     tellUs: 'Tell us what you want from the community',
   },
   labs: {
-    title: 'KIA Labs',
+    title: 'KIA Lab',
     sub: 'Technology, innovation, research, product development and published articles.',
     soon: 'Coming soon.',
     tellUs: 'Tell us what you want to see in labs',
@@ -657,9 +656,9 @@ export const en = {
       academyTitle: 'KIA Academy',
       workTitle: 'KIA Work',
       materialTitle: 'KIA Material',
-      eventsTitle: 'KIA Events',
+      eventsTitle: 'KIA Event',
       communityTitle: 'KIA Community',
-      labsTitle: 'KIA Labs',
+      labsTitle: 'KIA Lab',
     },
     tile: {
       roadmap: {

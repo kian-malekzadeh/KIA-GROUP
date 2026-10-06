@@ -116,16 +116,17 @@
   --fs-xs: 0.8125rem;
   --fs-micro: 0.75rem;
 
-  /* Yekan Bakh is the site UI font (FaNum). Mono kept for code / Latin digits in LTR. */
-  --font-display: var(--font-yekanbakh), 'Yekan Bakh FaNum', Tahoma, Arial, sans-serif;
-  --font-body: var(--font-yekanbakh), 'Yekan Bakh FaNum', Tahoma, Arial, sans-serif;
+  /* Pelak FA is the KIA GROUP brand typeface and the site UI font, site-wide.
+     Mono stays reserved for code / Latin digits in LTR. */
+  --font-fa: var(--font-pelak), 'Pelak FA', Tahoma, Arial, sans-serif;
+  --font-display: var(--font-fa);
+  --font-body: var(--font-fa);
   --font-mono: var(--font-jetbrains), 'JetBrains Mono', ui-monospace, monospace;
-  --font-fa: var(--font-yekanbakh), 'Yekan Bakh FaNum', Tahoma, Arial, sans-serif;
-  --font-pelak-stack: var(--font-pelak), 'Pelak FA', var(--font-fa), Tahoma, sans-serif;
+  --font-pelak-stack: var(--font-fa);
   /* Legacy aliases (Material Studio / older CSS). */
-  --font-vazirmatn: var(--font-yekanbakh);
-  --font-inter: var(--font-yekanbakh);
-  --font-sora: var(--font-yekanbakh);
+  --font-vazirmatn: var(--font-fa);
+  --font-inter: var(--font-fa);
+  --font-sora: var(--font-fa);
 
   --dur-fast: 120ms;
   --dur-base: 180ms;
@@ -456,7 +457,7 @@ canvas {
 /* =============================================================================
    Persian / RTL
    Remap display + body stacks so every `var(--font-display|body)` consumer
-   (logo, landing brand, wizard titles, etc.) picks up Yekan Bakh automatically.
+   (logo, landing brand, wizard titles, etc.) picks up Pelak FA automatically.
    ========================================================================== */
 
 [dir='rtl'],
@@ -498,7 +499,7 @@ canvas {
 }
 
 /* Persian shaping breaks under uppercase and positive tracking.
-   Eyebrows / tile micro-labels need Yekan Bakh — JetBrains Mono (next/font)
+   Eyebrows / tile micro-labels need Pelak FA — JetBrains Mono (next/font)
    is latin-only, so FA glyphs looked blank / like "no font applied". */
 [dir='rtl'] .eyebrow,
 [dir='rtl'] .label-micro,
@@ -804,11 +805,11 @@ input[type='tel'],
 }
 .dept--material {
   --dept: var(--dept-material);
-  --tile-on-fill: #ffffff;
+  --tile-on-fill: var(--ink-950);
 }
 .dept--events {
   --dept: var(--dept-events);
-  --tile-on-fill: #ffffff;
+  --tile-on-fill: var(--ink-950);
 }
 .dept--community {
   --dept: var(--dept-community);
@@ -932,7 +933,7 @@ input[type='tel'],
 .tint--amber {
   /* The tile fill is `--amber-500`, not `--amber-400`: #ffc864 is Kia Group's
      own gold, and these tiles sit *inside* department pages (the language track
-     under KIA Academy, the leaderboard under KIA Events). A sub-tile wearing the
+     under KIA Academy, the leaderboard under KIA Event). A sub-tile wearing the
      parent colour would break the rule that gold means Kia Group alone. */
   --tile-hairline: color-mix(in srgb, var(--amber-500) 38%, transparent);
   --tile-tint: color-mix(in srgb, var(--amber-500) 11%, transparent);

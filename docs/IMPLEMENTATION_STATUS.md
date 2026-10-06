@@ -748,7 +748,7 @@ all landed on **39.72px**. But the *wordmark ink* rode **1.99px above** it, so
 «KIA ACADEMY» looked lifted off the mark.
 
 - **Why.** `[dir='rtl'] .logo { font-family: var(--font-fa) }` renders the
-  Latin caps in yekanBakh, whose font box is 17px ascent + 9px descent at
+  Latin caps in pelak, whose font box is 17px ascent + 9px descent at
   17px — the descent is reserved for Persian descenders (ی، ج، …) that
   "KIA ACADEMY" never draws. Centred half-leading therefore leaves the cap
   band high: measured cap ink 11px tall, entirely above the baseline. The

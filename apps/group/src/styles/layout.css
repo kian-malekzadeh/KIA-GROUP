@@ -320,7 +320,7 @@
 
   /* Optical centring for the wordmark. `align-items: center` already puts the
      line box dead centre in `.logo`, but the *ink* is not: `[dir='rtl'] .logo`
-     renders the Latin caps in yekanBakh, whose font box reserves 17px ascent +
+     renders the Latin caps in pelak, whose font box reserves 17px ascent +
      9px descent for Persian glyphs (ی، ج، …) that "KIA GROUP" never draws. The
      cap band therefore rides ~2px above the button's middle — and above the
      brand mark, whose box centre is the same 39.72px line. The offset is

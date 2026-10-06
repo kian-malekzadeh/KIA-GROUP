@@ -3,7 +3,7 @@
 ## Cursor Cloud specific instructions
 
 **کیا گروه (Kia Group)** — Persian-first platform with six departments: KIA Academy, KIA Work,
-KIA Material, KIA Events, KIA Community, KIA Labs (tagline: آموزش · اشتغال · نوآوری · ارتباط · توسعه). Architecture notes: `docs/REBUILD_ARCHITECTURE.md`.
+KIA Material, KIA Event, KIA Community, KIA Lab (tagline: آموزش · اشتغال · نوآوری · ارتباط · توسعه). Architecture notes: `docs/REBUILD_ARCHITECTURE.md`.
 
 Monorepo: Node `>=22.13`, pnpm `11.13.0` via Corepack. Standard commands live in root `package.json` and `README.md`.
 
@@ -20,7 +20,7 @@ domains, in one deployable app each:
   - `src/group/` — platform: auth, admin, site-settings, media, email, sms,
     contact, health, support/*, commerce/*, search
   - `src/academy/` — KIA Academy domain
-  - `src/events/` — KIA Events domain
+  - `src/events/` — KIA Event domain
   - `src/common/` — guards, rate limiting, **domain events**
   - Departments never import each other: communicate via shared contracts,
   the platform services, or `src/common/events`.

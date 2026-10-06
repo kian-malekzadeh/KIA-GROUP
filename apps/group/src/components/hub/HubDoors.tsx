@@ -16,7 +16,7 @@ import { useLanguage } from '@/context/LanguageProvider';
  * the top of the dashboard panel so both entry points stay identical.
  *
  * Six departments, named as one family (KIA Academy / KIA Work / KIA Material /
- * KIA Events / KIA Community / KIA Labs) so the brand reads the same in Persian
+ * KIA Event / KIA Community / KIA Lab) so the brand reads the same in Persian
  * and English: the Persian titles transliterate the Latin ones rather than
  * inventing a second vocabulary for the same six boxes.
  *

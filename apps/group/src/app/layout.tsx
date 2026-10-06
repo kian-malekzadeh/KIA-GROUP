@@ -13,22 +13,10 @@ import {
 } from '@/lib/seo';
 import '@/styles/globals.css';
 
-/** Site-wide Persian UI font (FaNum = Persian digits). */
-const yekanBakh = localFont({
-  src: [
-    { path: './fonts/yekanbakh/YekanBakhFaNum-Regular.woff2', weight: '400', style: 'normal' },
-    { path: './fonts/yekanbakh/YekanBakhFaNum-Regular.woff2', weight: '500', style: 'normal' },
-    { path: './fonts/yekanbakh/YekanBakhFaNum-SemiBold.woff2', weight: '600', style: 'normal' },
-    { path: './fonts/yekanbakh/YekanBakhFaNum-Bold.woff2', weight: '700', style: 'normal' },
-    { path: './fonts/yekanbakh/YekanBakhFaNum-ExtraBold.woff2', weight: '800', style: 'normal' },
-    { path: './fonts/yekanbakh/YekanBakhFaNum-Black.woff2', weight: '900', style: 'normal' },
-  ],
-  variable: '--font-yekanbakh',
-  display: 'swap',
-  adjustFontFallback: false,
-});
-
-/** Landing hero title only. */
+/**
+ * Pelak FA — the KIA GROUP brand typeface (KIA-Color-Font identity) and the
+ * site-wide UI font for every page, from the landing hero to admin tables.
+ */
 const pelak = localFont({
   src: [
     { path: './fonts/pelak/PelakFA-Regular.woff2', weight: '400', style: 'normal' },
@@ -117,7 +105,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html
       lang={locale}
       dir={dir}
-      className={`${yekanBakh.variable} ${pelak.variable} ${jetbrainsMono.variable}`}
+      className={`${pelak.variable} ${jetbrainsMono.variable}`}
       data-theme="light"
       suppressHydrationWarning
     >
