@@ -17,7 +17,7 @@
     "dev": "concurrently -n web,api -c blue,green \"pnpm --filter @kia-group/group dev\" \"pnpm --filter @kia-group/api dev\"",
     "build:libs": "pnpm --filter @kia-group/permissions build && pnpm --filter @kia-group/brand build && pnpm --filter @kia-group/shared build",
     "build": "pnpm build:libs && pnpm --filter @kia-group/api build && pnpm --filter @kia-group/group build",
-        "build:pages": "pnpm --filter @kia-group/shared build && export GITHUB_PAGES=true && export NEXT_BASE_PATH=/${PAGES_REPO_NAME:-Kia-Academy} && export NEXT_PUBLIC_APP_URL=https://kian-malekzadeh.github.io/${PAGES_REPO_NAME:-Kia-Academy} && export NEXT_PUBLIC_DEMO_MODE=true && pnpm --filter @kia-group/group build",
+    "build:pages": "pnpm --filter @kia-group/shared build && export GITHUB_PAGES=true && export NEXT_BASE_PATH=/${PAGES_REPO_NAME:-KIA-GROUP} && export NEXT_PUBLIC_APP_URL=https://kian-malekzadeh.github.io/${PAGES_REPO_NAME:-KIA-GROUP} && export NEXT_PUBLIC_DEMO_MODE=true && pnpm --filter @kia-group/group build",
     "start": "concurrently -n web,api -c blue,green \"pnpm --filter @kia-group/group start\" \"pnpm --filter @kia-group/api start:prod\"",
     "lint": "pnpm -r lint",
     "typecheck": "pnpm -r typecheck",

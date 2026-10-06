@@ -7,7 +7,7 @@ const isProd = process.env.NODE_ENV === 'production';
 const apiProxyTarget = (process.env.API_PROXY_TARGET ?? 'http://localhost:3001').replace(/\/$/, '');
 
 /** Project-site path — must match the GitHub repo name (Pages URL /<repo>/). */
-const githubPagesBasePath = (process.env.NEXT_BASE_PATH ?? '/Kia-Academy').replace(/\/$/, '') || '';
+const githubPagesBasePath = (process.env.NEXT_BASE_PATH ?? '/KIA-GROUP').replace(/\/$/, '') || '';
 
 /**
  * Practical CSP for Next.js App Router (self-hosted fonts + same-origin API proxy).

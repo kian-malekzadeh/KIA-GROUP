@@ -4,22 +4,20 @@
 
 # Kia Group · کیا گروه
 
-**Learn · Work · Create · Connect · Grow — Persian-first, RTL-native**
+**Learn · Work · Create · Connect · Grow **
 
-[![CI](https://github.com/kian-malekzadeh/Kia-Academy/actions/workflows/ci.yml/badge.svg)](https://github.com/kian-malekzadeh/Kia-Academy/actions/workflows/ci.yml)
+[![CI](https://github.com/kian-malekzadeh/KIA-GROUP/actions/workflows/ci.yml/badge.svg)](https://github.com/kian-malekzadeh/KIA-GROUP/actions/workflows/ci.yml)
+[![E2E](https://github.com/kian-malekzadeh/KIA-GROUP/actions/workflows/e2e.yml/badge.svg)](https://github.com/kian-malekzadeh/KIA-GROUP/actions/workflows/e2e.yml)
+[![Security](https://github.com/kian-malekzadeh/KIA-GROUP/actions/workflows/security.yml/badge.svg)](https://github.com/kian-malekzadeh/KIA-GROUP/actions/workflows/security.yml)
 [![Node](https://img.shields.io/badge/node-%E2%89%A522.13-339933?logo=nodedotjs&logoColor=white)](https://nodejs.org)
 [![pnpm](https://img.shields.io/badge/pnpm-monorepo-F69220?logo=pnpm&logoColor=white)](https://pnpm.io)
 [![Next.js](https://img.shields.io/badge/Next.js-16-black?logo=nextdotjs&logoColor=white)](https://nextjs.org)
 [![NestJS](https://img.shields.io/badge/NestJS-11-E0234E?logo=nestjs&logoColor=white)](https://nestjs.com)
-[![Prisma](https://img.shields.io/badge/Prisma-6-2D3748?logo=prisma&logoColor=white)](https://prisma.io)
+[![Prisma](https://img.shields.io/badge/Prisma-7-2D3748?logo=prisma&logoColor=white)](https://prisma.io)
 [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-4169E1?logo=postgresql&logoColor=white)](https://www.postgresql.org)
 [![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 
-**[🌐 Live Demo (DashPloy)](https://kia-academy.dashploy.app)** &nbsp;·&nbsp;
-**[📄 GitHub Pages mirror](https://kian-malekzadeh.github.io/Kia-Academy/)** &nbsp;·&nbsp;
-**[📦 Repository](https://github.com/kian-malekzadeh/Kia-Academy)** &nbsp;·&nbsp;
-**[🐞 Issues](https://github.com/kian-malekzadeh/Kia-Academy/issues)** &nbsp;·&nbsp;
-**[🔒 Security Policy](SECURITY.md)**
+**[📄 GitHub Pages mirror](https://kian-malekzadeh.github.io/KIA-GROUP/)** &nbsp;·&nbsp;
 
 </div>
 
@@ -79,7 +77,7 @@ Results (/readiness/results) ─► Roadmap (/roadmap) ──► Checkout ──
 | --- | --- |
 | Frontend | Next.js 16 (App Router), React 19, TypeScript, lucide-react, local Persian brand font (Pelak FA) |
 | Backend | NestJS 11, Passport JWT, class-validator, @nestjs/throttler, helmet |
-| Database | PostgreSQL 16 + Prisma ORM 6 (single baseline migration) |
+| Database | PostgreSQL 16 + Prisma ORM 7 (43 models · 13 enums · 19 migrations) |
 | Shared | `@kia-group/shared` — types, banks, grading, entitlements, validators (built first) |
 | Quality | ESLint flat config, Prettier, Vitest (shared) + Jest (api), Playwright e2e |
 | Infra | Docker multi-stage images, GitHub Actions CI, GH Pages static export (demo mode) |
@@ -107,7 +105,7 @@ kia-group/
 │       ├── src/events/       # KIA Event: competitions · challenges
 │       ├── src/common/       # guards · rate limit · domain events
 │       └── prisma/
-│           ├── schema.prisma       # 50+ models, domain-ownership map in header
+│           ├── schema.prisma       # 43 models, domain-ownership map in header
 │           └── migrations/         # init_baseline + hardening migrations
 ├── packages/
 │   ├── brand/          # @kia-group/brand — the seven brand tokens (TS + CSS)
@@ -164,8 +162,8 @@ public static dump.
 **Prerequisites:** Node **≥ 22.13**, pnpm via Corepack, PostgreSQL 16 (local or Docker).
 
 ```bash
-git clone https://github.com/kian-malekzadeh/Kia-Academy.git Kia-Academyemy
-cd Kia-Academyemy
+git clone https://github.com/kian-malekzadeh/KIA-GROUP.git KIA-GROUP
+cd KIA-GROUP
 
 corepack enable && corepack prepare pnpm@11.19.0 --activate
 pnpm install --frozen-lockfile        # also generates the Prisma client
@@ -176,7 +174,7 @@ cp apps/group/.env.example apps/group/.env.local    # leave NEXT_PUBLIC_DEMO_MOD
 
 pnpm docker:db                        # or run your own Postgres 16
 pnpm --filter @kia-group/shared build
-pnpm db:migrate                       # applies init_baseline migration
+pnpm db:migrate                       # applies all 19 migrations (baseline + hardening)
 pnpm db:seed                          # catalog + banks + starter users
 
 pnpm dev                              # web :3000 · api :3001 · health /api/health
@@ -196,7 +194,7 @@ pnpm dev                              # web :3000 · api :3001 · health /api/he
 | A — Local Postgres | steps above with your own DB URL | no Docker needed |
 | B — Docker Postgres only | `pnpm docker:db` then `pnpm dev` | hot-reload DX (recommended) |
 | C — Full Docker stack | `pnpm docker:setup && pnpm docker:up` | production-like containers |
-| D — Static Pages export | `pnpm build:pages` | demo mode, basePath `/Kia-Academy` |
+| D — Static Pages export | `pnpm build:pages` | demo mode, basePath `/KIA-GROUP` (override with `PAGES_REPO_NAME`) |
 
 ## 🧰 Scripts
 
@@ -208,6 +206,7 @@ pnpm dev                              # web :3000 · api :3001 · health /api/he
 | `pnpm lint` / `pnpm typecheck` | ESLint flat config / tsc project references |
 | `pnpm test` | Jest (api) + Vitest (shared, brand, permissions, web) suites |
 | `pnpm test:e2e` | Playwright end-to-end flows |
+| `pnpm build:pages` | Static GitHub Pages demo export (basePath `/KIA-GROUP`) |
 | `pnpm db:migrate` / `db:migrate:deploy` | Dev migrate / non-interactive apply |
 | `pnpm db:seed` | Idempotent upserts (catalog, banks, settings, starter users)
 | `pnpm docker:*` | db/db:down/db:reset/setup/up/down/logs/build |
@@ -223,14 +222,17 @@ Everything ships as templates — only `*.example` files are committed.
 | `CORS_ORIGIN` | api `.env` | Public web origin, credential-safe single origin |
 | `OTP_DEV_EXPOSE` | api `.env` | ⚠️ dev-only flag returning `devCode`; must stay unset in production |
 | `NEXT_PUBLIC_API_URL` / `API_PROXY_TARGET` | web `.env.local` | Same-origin proxy in local/Docker; external origin on static hosting |
+| `NEXT_PUBLIC_DEMO_MODE` | web `.env.local` | `true` → fully in-browser mock API (static hosting: Pages/DashPloy), no backend needed |
 | `STRIPE_SECRET_KEY`, SMTP_* | api `.env` | Optional providers (IRR gateways ZarinPal/IDPay supported natively) |
 
 ## 🧪 Quality Gates
 
-- ✅ ESLint + `tsc --noEmit` across all three workspaces
-- ✅ Jest API suite (auth, payments, guards…) + Vitest unit suites (grading, currency, geo)
-- ✅ CI (`.github/workflows/ci.yml`) boots a real Postgres service → migrate → lint → typecheck → test → build on every push/PR to `main`
-- ✅ Dependabot weekly dependency & action updates
+- ✅ ESLint + `tsc --noEmit` across all workspaces
+- ✅ 367 unit/API tests — Jest API suite (auth, payments, guards, competitions…) + Vitest suites (brand, permissions, shared, web)
+- ✅ CI (`.github/workflows/ci.yml`) boots a real Postgres service → migrate → seed → lint → typecheck → test → build on every push/PR to `main`
+- ✅ E2E (`.github/workflows/e2e.yml`) runs the 9-flow Playwright learner journey against a production build + real Postgres
+- ✅ Security (`.github/workflows/security.yml`) — blocking `pnpm audit` on prod deps (**0 vulnerabilities**), gitleaks secret scan, CodeQL SAST (push + weekly sweep)
+- ✅ Dependabot weekly dependency, action & Docker updates
 
 ## 🛡️ Security Posture
 
@@ -242,6 +244,7 @@ Everything ships as templates — only `*.example` files are committed.
 | Validation | class-validator whitelist + forbidNonWhitelisted; Joi env schema at boot |
 | Uploads | MIME allow-lists, size caps, safe-path helper, authenticated media URLs |
 | Payment integrity | In-app free confirmation blocked in production; gateway callbacks verify through provider APIs |
+| Dependencies | pnpm workspace `overrides` pin patched transitive versions; CI blocks on high+ prod advisories (currently 0) |
 
 Report vulnerabilities responsibly per [`SECURITY.md`](SECURITY.md) — please use private advisories instead of public issues.
 
@@ -252,7 +255,7 @@ Report vulnerabilities responsibly per [`SECURITY.md`](SECURITY.md) — please u
   no backend). To redeploy, build with `GITHUB_PAGES=true NEXT_BASE_PATH= NEXT_PUBLIC_DEMO_MODE=true pnpm --filter @kia-group/group build`,
   then push `apps/group/out` via the DashPloy API (`POST /api/v1/deploy`, see
   <https://dashploy.com/llms.txt>).
-- **GitHub Pages (mirror):** the `Deploy GitHub Pages` workflow builds the demo app on every push to `main` (`NEXT_PUBLIC_DEMO_MODE=true`, basePath `/Kia-Academy/`) and deploys it automatically — live at <https://kian-malekzadeh.github.io/Kia-Academy/>. Local preview: `pnpm build:pages` → serve `apps/group/out`.
+- **GitHub Pages (mirror):** the `Deploy GitHub Pages` workflow builds the demo app on every push to `main` (`NEXT_PUBLIC_DEMO_MODE=true`, basePath `/KIA-GROUP/`, taken from the repository name via `PAGES_REPO_NAME`) and deploys it automatically — live at <https://kian-malekzadeh.github.io/KIA-GROUP/>. Local preview: `pnpm build:pages` → serve `apps/group/out`.
 - **Self-host Docker:** hardened multi-stage images (`docker build --target api|web`) running as a non-root `node` user, OCI-labelled, with built-in healthchecks; Compose adds `init: true` and `no-new-privileges` on app containers. See run mode **C** above.
 - **CI:** every commit is validated against a live Postgres before merge
 
@@ -272,6 +275,10 @@ Report vulnerabilities responsibly per [`SECURITY.md`](SECURITY.md) — please u
 | [`docs/development/testing.md`](docs/development/testing.md) | Test layers and priorities |
 | [`docs/development/contributing.md`](docs/development/contributing.md) | Conventions and review checks |
 | [`docs/AUDIT.md`](docs/AUDIT.md) | The production-readiness audit (findings + status) |
+| [`docs/FINAL_AUDIT_REPORT.md`](docs/FINAL_AUDIT_REPORT.md) | Final gate results: lint/typecheck/tests/E2E/audit verdict |
+| [`docs/PRE_LAUNCH_CHECKLIST.md`](docs/PRE_LAUNCH_CHECKLIST.md) | Operator-only launch blockers (gateway, SMTP, DNS, backups…) |
+| [`docs/DEPLOY_RUNBOOK.md`](docs/DEPLOY_RUNBOOK.md) | Persian deploy/rollback runbook (Docker + GHCR images) |
+| [`docs/SECURITY_CHECKLIST.md`](docs/SECURITY_CHECKLIST.md) | Pre-launch security sign-off list |
 | [`docs/REBUILD_ARCHITECTURE.md`](docs/REBUILD_ARCHITECTURE.md) | Product shape history (pre-department-split) |
 | [`docs/ADMIN_SETTINGS_CATALOG.md`](docs/ADMIN_SETTINGS_CATALOG.md) | Every controllable admin setting |
 | [`docs/LEARNER_DASHBOARD.md`](docs/LEARNER_DASHBOARD.md) | Dashboard section-by-section spec |

@@ -16,7 +16,7 @@ export default function manifest(): MetadataRoute.Manifest {
     theme_color: '#f5f6fb',
     icons: [
       // Relative srcs resolve against the manifest URL, so they work both
-      // self-hosted and under the GitHub Pages basePath (/Kia-Academy/).
+      // self-hosted and under the GitHub Pages basePath (/KIA-GROUP/).
       {
         src: 'icons/icon-192.png',
         sizes: '192x192',

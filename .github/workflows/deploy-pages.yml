@@ -51,7 +51,11 @@ jobs:
         run: pnpm install --frozen-lockfile --ignore-scripts
 
       - name: Build static demo export
+        # PAGES_REPO_NAME keeps the basePath in sync with this repository's name,
+        # so a rename (e.g. Kia-Academy → KIA-GROUP) can never stale the mirror.
         run: pnpm build:pages
+        env:
+          PAGES_REPO_NAME: ${{ github.event.repository.name }}
 
       - name: Bypass Jekyll processing
         run: touch apps/group/out/.nojekyll
