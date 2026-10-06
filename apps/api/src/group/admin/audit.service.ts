@@ -1,7 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import type { AdminAuditLogList, AdminAuditLogParams, AuthUser } from '@kia-group/shared';
-import { Prisma } from '../../generated/prisma/client';
-import { PrismaService } from '../../prisma/prisma.service';
+import { Prisma } from '@kia-group/platform';
+import { PrismaService } from '@kia-group/platform';
 
 /** Request-scoped metadata captured for audit entries. */
 export interface AdminAuditRequestMeta {

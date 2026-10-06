@@ -4,7 +4,7 @@ import {
   type SitePaymentSettings,
 } from '@kia-group/shared';
 import { StripeService } from '../../stripe/stripe.service';
-import { isProductionEnv } from '../../../../common/utils/node-env';
+import { isProductionEnv } from '@kia-group/platform';
 import type {
   PaymentCreateInput,
   PaymentCreateResult,

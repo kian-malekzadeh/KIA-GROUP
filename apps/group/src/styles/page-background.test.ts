@@ -106,7 +106,10 @@ function lastCompound(selector: string): string {
 }
 
 describe('page background', () => {
-  const sheets = walk(SRC, ['.css']);
+  // The Material Studio package ships site CSS too — it used to live under
+  // src/features/material and is now kia-group/kia-material/resources.
+  const MATERIAL = path.resolve(SRC, '../../../kia-group/kia-material/resources');
+  const sheets = [...walk(SRC, ['.css']), ...walk(MATERIAL, ['.css'])];
   const rules = sheets.flatMap((file) =>
     cssRules(readFileSync(file, 'utf8')).map((rule) => ({
       file: path.relative(SRC, file),
@@ -146,7 +149,7 @@ describe('page background', () => {
 
   it('has no second aurora token competing with .site-aurora', () => {
     const offenders: string[] = [];
-    const sources = [...sheets, ...walk(SRC, ['.tsx', '.ts'])].filter(
+    const sources = [...sheets, ...walk(SRC, ['.tsx', '.ts']), ...walk(MATERIAL, ['.tsx', '.ts'])].filter(
       (file) => !file.endsWith('.test.ts'),
     );
     for (const file of sources) {

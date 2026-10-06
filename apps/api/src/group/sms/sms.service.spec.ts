@@ -3,7 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import { createDefaultSiteSettings, type SiteSettings } from '@kia-group/shared';
 import { SmsService } from './sms.service';
 import type { SmsProviderRegistry } from './providers/sms-provider.registry';
-import type { SiteSettingsService } from '../site-settings/site-settings.service';
+import type { SiteSettingsService } from '@kia-group/platform';
 
 describe('SmsService', () => {
   let settings: SiteSettings;

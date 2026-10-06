@@ -16,8 +16,8 @@ import type {
   SupportTicketSummary,
 } from '@kia-group/shared';
 import { MAX_TICKET_ATTACHMENT_BYTES, MAX_TICKET_ATTACHMENTS } from '@kia-group/shared';
-import { CurrentUser } from '../../../common/decorators/current-user.decorator';
-import { JwtAuthGuard } from '../../../common/guards/jwt-auth.guard';
+import { CurrentUser } from '@kia-group/platform';
+import { JwtAuthGuard } from '@kia-group/platform';
 import { CreateTicketDto, TicketReplyDto } from './dto/ticket.dto';
 import { TicketsService } from './tickets.service';
 

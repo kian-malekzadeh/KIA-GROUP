@@ -11,8 +11,8 @@ import {
   type CartItemResponse,
   type CartResponse,
 } from '@kia-group/shared';
-import { PrismaService } from '../../../prisma/prisma.service';
-import { SiteSettingsService } from '../../site-settings/site-settings.service';
+import { PrismaService } from '@kia-group/platform';
+import { SiteSettingsService } from '@kia-group/platform';
 
 @Injectable()
 export class CartService {

@@ -7,8 +7,8 @@ import helmet from 'helmet';
 import { join } from 'path';
 import type { Request, Response } from 'express';
 import { AppModule } from './app.module';
-import { HttpExceptionFilter } from './common/filters/http-exception.filter';
-import { isProductionEnv } from './common/utils/node-env';
+import { HttpExceptionFilter } from '@kia-group/platform';
+import { isProductionEnv } from '@kia-group/platform';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule, { rawBody: true });

@@ -8,7 +8,7 @@ Types, banks, grading and validators used by both apps. Contracts are the
 stable vocabulary — a department may read another department's *contract*, but
 never its database tables or services.
 
-## 2. Domain events (`apps/api/src/common/events`)
+## 2. Domain events (`packages/platform/src/common/events`)
 
 Typed in-process bus. Publishing never blocks the emitting flow; consumers are
 idempotent; payloads carry IDs, never secrets.

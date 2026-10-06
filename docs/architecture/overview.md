@@ -67,7 +67,7 @@ apps/group ──► apps/api ──► Prisma
 ```
 
 - Departments read each other only through **shared package contracts**,
-  the **platform search service**, or **domain events** (`apps/api/src/common/events`).
+  the **platform search service**, or **domain events** (`packages/platform/src/common/events`).
 - The API regroup is enforced by the folder layout and documented in
   [integrations.md](./integrations.md); the web side keeps departments in
   separate route groups with per-department colour scopes (`.dept--<slug>`).

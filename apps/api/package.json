@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "build": "nest build",
-    "predev": "pnpm --filter @kia-group/shared build",
+    "predev": "pnpm -w run build:libs",
     "dev": "nest start --watch",
     "start:prod": "node dist/main",
     "lint": "eslint \"{src,prisma}/**/*.ts\" --config ../../eslint.config.mjs",
@@ -16,6 +16,9 @@
     "prisma:seed": "tsx prisma/seed.ts"
   },
   "dependencies": {
+    "@kia-group/kia-academy": "workspace:*",
+    "@kia-group/kia-event": "workspace:*",
+    "@kia-group/platform": "workspace:*",
     "@kia-group/shared": "workspace:*",
     "@nest-lab/throttler-storage-redis": "^1.2.0",
     "@nestjs/common": "^11.0.12",

@@ -23,8 +23,8 @@ import type {
   TwoFactorChallengeResponse,
 } from '@kia-group/shared';
 import type { Request, Response } from 'express';
-import { CurrentUser } from '../../common/decorators/current-user.decorator';
-import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
+import { CurrentUser } from '@kia-group/platform';
+import { JwtAuthGuard } from '@kia-group/platform';
 import { AuthGuard } from '@nestjs/passport';
 import { AuthService } from './auth.service';
 import { LoginDto } from './dto/login.dto';

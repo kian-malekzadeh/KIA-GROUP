@@ -1,0 +1,42 @@
+{
+  "name": "@kia-group/platform",
+  "version": "1.0.0",
+  "private": true,
+  "description": "KIA GROUP platform kernel — Prisma client, shared guards/decorators/domain-events, site settings, media and email. The connection core every department package depends on.",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "lint": "eslint src --config ../../eslint.config.mjs",
+    "typecheck": "tsc -p tsconfig.build.json --noEmit",
+    "test": "jest"
+  },
+  "dependencies": {
+    "@kia-group/shared": "workspace:*",
+    "@nest-lab/throttler-storage-redis": "^1.2.0",
+    "@nestjs/common": "^11.0.12",
+    "@nestjs/config": "^4.0.2",
+    "@nestjs/core": "^11.0.12",
+    "@nestjs/jwt": "^11.0.2",
+    "@nestjs/passport": "^11.0.5",
+    "@nestjs/throttler": "^6.5.0",
+    "@prisma/adapter-pg": "^7.10.0",
+    "@prisma/client": "^7.10.0",
+    "class-transformer": "^0.5.1",
+    "class-validator": "^0.15.1",
+    "dotenv": "^17.4.2",
+    "ioredis": "^6.0.0",
+    "nodemailer": "^9.1.0",
+    "passport": "^0.7.0"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.1",
+    "@types/jest": "^30.0.0",
+    "@types/multer": "^2.2.0",
+    "@types/node": "^26.4.0",
+    "@types/nodemailer": "^8.0.1",
+    "jest": "^30.5.0",
+    "ts-jest": "^29.4.12",
+    "typescript": "^5.8.3"
+  }
+}

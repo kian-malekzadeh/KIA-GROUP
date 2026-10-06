@@ -34,6 +34,6 @@ ThrottlerGuard (per-route limits) → JwtAuthGuard (identity + status)
 
 ## Where checks live
 
-- Guards + decorators: `apps/api/src/common/guards/`, `common/decorators/`.
+- Guards + decorators: `packages/platform/src/common/guards/`, `packages/platform/src/common/decorators/`.
 - Matrix resolution: `@kia-group/permissions` (single home; `shared` re-exports).
 - Admin UI consumption: `apps/group/src/components/admin/useAdminAccess.ts`.

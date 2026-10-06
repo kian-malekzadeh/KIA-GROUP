@@ -26,13 +26,13 @@ import {
   type WalletTransactionDto,
 } from '@kia-group/shared';
 import type Stripe from 'stripe';
-import { isProductionEnv } from '../../../common/utils/node-env';
-import { Prisma } from '../../../generated/prisma/client';
+import { isProductionEnv } from '@kia-group/platform';
+import { Prisma } from '@kia-group/platform';
 import { CartService } from '../cart/cart.service';
-import { EmailService } from '../../email/email.service';
-import { EventBusService } from '../../../common/events/event-bus.service';
-import { PrismaService } from '../../../prisma/prisma.service';
-import { SiteSettingsService } from '../../site-settings/site-settings.service';
+import { EmailService } from '@kia-group/platform';
+import { EventBusService } from '@kia-group/platform';
+import { PrismaService } from '@kia-group/platform';
+import { SiteSettingsService } from '@kia-group/platform';
 import { StripeService } from '../stripe/stripe.service';
 import {
   assertValidPaymentTransition,

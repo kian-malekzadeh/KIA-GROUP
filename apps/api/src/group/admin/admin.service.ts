@@ -30,9 +30,9 @@ import {
 } from '@kia-group/shared';
 import * as bcrypt from 'bcrypt';
 import { createHash } from 'crypto';
-import { MediaStorageService } from '../media/media-storage.service';
-import { PrismaService } from '../../prisma/prisma.service';
-import { SiteSettingsService } from '../site-settings/site-settings.service';
+import { MediaStorageService } from '@kia-group/platform';
+import { PrismaService } from '@kia-group/platform';
+import { SiteSettingsService } from '@kia-group/platform';
 import {
   AdminAdjustWalletDto,
   AdminCreateChallengeDto,
@@ -57,7 +57,7 @@ import {
 } from './dto/admin.dto';
 import { AdminAuditService } from './audit.service';
 import { PaymentsService } from '../commerce/payments/payments.service';
-import { Prisma, EntitlementResourceType } from '../../generated/prisma/client';
+import { Prisma, EntitlementResourceType } from '@kia-group/platform';
 
 const BCRYPT_ROUNDS = 12;
 

@@ -3,10 +3,10 @@ import { ConfigModule } from '@nestjs/config';
 import { APP_GUARD } from '@nestjs/core';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { envValidationSchema } from './config/env.validation';
-import { RateLimitModule } from './common/rate-limit/rate-limit.module';
-import { DomainEventsModule } from './common/events/domain-events.module';
+import { RateLimitModule } from '@kia-group/platform';
+import { DomainEventsModule } from '@kia-group/platform';
 import { AppController } from './app.controller';
-import { PrismaModule } from './prisma/prisma.module';
+import { PrismaModule } from '@kia-group/platform';
 
 /*
  * KIA GROUP domain registry.
@@ -14,21 +14,22 @@ import { PrismaModule } from './prisma/prisma.module';
  * The API is a modular monolith: every Nest module belongs to exactly one
  * department domain, and the folder layout mirrors that ownership:
  *
- *   src/group/    — the platform layer (identity, sessions, admin, settings,
- *                   media, email, SMS, support, billing/commerce, health)
- *   src/academy/  — the KIA Academy learning domain
- *   src/events/   — the KIA Event competitions & challenges domain
- *   src/common/   — cross-domain platform infrastructure (guards, rate
- *                   limiting, domain events, search)
+ *   src/ + @kia-group/platform — the platform shell (identity, sessions,
+ *                   admin, settings via packages/platform, SMS, support,
+ *                   billing/commerce, health) — packages/platform also holds
+ *                   the Prisma kernel + shared guards/decorators/events
+ *   @kia-group/kia-academy — KIA Academy learning domain  (kia-group/kia-academy)
+ *   @kia-group/kia-event   — competitions, challenges & bootcamps
+ *                            (kia-group/kia-event)
  *
  * Departments never import each other's services: cross-department reads go
  * through the shared package contracts or the domain-events bus.
  */
 import { AuthModule } from './group/auth/auth.module';
 import { AdminModule } from './group/admin/admin.module';
-import { SiteSettingsModule } from './group/site-settings/site-settings.module';
-import { MediaModule } from './group/media/media.module';
-import { EmailModule } from './group/email/email.module';
+import { SiteSettingsModule } from '@kia-group/platform';
+import { MediaModule } from '@kia-group/platform';
+import { EmailModule } from '@kia-group/platform';
 import { SmsModule } from './group/sms/sms.module';
 import { ContactModule } from './group/contact/contact.module';
 import { HealthModule } from './group/health/health.module';
@@ -39,17 +40,17 @@ import { CartModule } from './group/commerce/cart/cart.module';
 import { PaymentsModule } from './group/commerce/payments/payments.module';
 import { StripeModule } from './group/commerce/stripe/stripe.module';
 import { SearchModule } from './group/search/search.module';
-import { CoursesModule } from './academy/courses/courses.module';
-import { CourseExamsModule } from './academy/course-exams/course-exams.module';
-import { AssessmentsModule } from './academy/assessments/assessments.module';
-import { PersonalityModule } from './academy/personality/personality.module';
-import { RoadmapsModule } from './academy/roadmaps/roadmaps.module';
-import { ReadinessModule } from './academy/readiness/readiness.module';
-import { BootcampModule } from './academy/bootcamp/bootcamp.module';
-import { TestBanksModule } from './academy/test-banks/test-banks.module';
-import { ProgressModule } from './academy/progress/progress.module';
-import { CompetitionsModule } from './events/competitions/competitions.module';
-import { ChallengesModule } from './events/challenges/challenges.module';
+import { CoursesModule } from '@kia-group/kia-academy';
+import { CourseExamsModule } from '@kia-group/kia-academy';
+import { AssessmentsModule } from '@kia-group/kia-academy';
+import { PersonalityModule } from '@kia-group/kia-academy';
+import { RoadmapsModule } from '@kia-group/kia-academy';
+import { ReadinessModule } from '@kia-group/kia-academy';
+import { BootcampModule } from '@kia-group/kia-event';
+import { TestBanksModule } from '@kia-group/kia-academy';
+import { ProgressModule } from '@kia-group/kia-academy';
+import { CompetitionsModule } from '@kia-group/kia-event';
+import { ChallengesModule } from '@kia-group/kia-event';
 
 @Module({
   controllers: [AppController],

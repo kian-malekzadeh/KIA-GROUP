@@ -224,7 +224,7 @@ describe('department marks in the markup', () => {
     const page = {
       academy: path.join(appDir, '(academy)', 'tracks', 'page.tsx'),
       work: path.join(appDir, '(work)', 'freelance', 'page.tsx'),
-      material: pathFile(path.join(appDir, '..', 'features', 'material', 'MaterialStudio.tsx')),
+      material: pathFile(path.join(appDir, '..', '..', '..', '..', 'kia-group', 'kia-material', 'resources', 'MaterialStudio.tsx')),
       events: path.join(appDir, '(events)', 'events', 'page.tsx'),
       community: path.join(appDir, '(community)', 'community', 'page.tsx'),
       labs: path.join(appDir, '(labs)', 'labs', 'page.tsx'),

@@ -1,8 +1,6 @@
 import { BadRequestException, ConflictException, ForbiddenException, NotFoundException } from '@nestjs/common';
 import type { AuthUser } from '@kia-group/shared';
 import { AdminService } from './admin.service';
-import { AssessmentsService } from '../../academy/assessments/assessments.service';
-import { CoursesService } from '../../academy/courses/courses.service';
 
 const actor: AuthUser = {
   id: 'admin-1',
@@ -344,70 +342,6 @@ describe('AdminService.updateUserStatus', () => {
     await expect(
       makeService(missing).updateUserStatus('nope', { status: 'ACTIVE' }, actor),
     ).rejects.toBeInstanceOf(NotFoundException);
-  });
-});
-
-describe('ownership and lesson completion', () => {
-  it('AssessmentsService.findOne rejects foreign assessments', async () => {
-    const prisma = {
-      assessment: {
-        findFirst: jest.fn().mockResolvedValue(null),
-      },
-    };
-    const service = new AssessmentsService(prisma as never);
-    await expect(service.findOne('a1', 'user-1')).rejects.toBeInstanceOf(NotFoundException);
-    expect(prisma.assessment.findFirst).toHaveBeenCalledWith({
-      where: { id: 'a1', userId: 'user-1' },
-    });
-  });
-
-  it('CoursesService.markComplete resolves lesson by course and lesson slug', async () => {
-    const prisma = {
-      course: {
-        findUnique: jest.fn().mockResolvedValue({
-          id: 'c1',
-          slug: 'js-core',
-          published: true,
-          enrollments: [{ id: 'e1' }],
-          lessons: [
-            {
-              id: 'l1',
-              slug: 'intro',
-              title: 'Intro',
-              durationMin: 10,
-            },
-          ],
-        }),
-      },
-      lessonProgress: {
-        upsert: jest.fn().mockResolvedValue({ completed: true }),
-        count: jest.fn().mockResolvedValue(1),
-      },
-      lesson: {
-        count: jest.fn().mockResolvedValue(1),
-      },
-      entitlement: {
-        findFirst: jest.fn().mockResolvedValue({ id: 'ent-1' }),
-      },
-    };
-
-    const mediaService = {
-      createSignedVideoUrl: jest.fn(),
-    };
-
-    const service = new CoursesService(
-      prisma as never,
-      mediaService as never,
-      { publish: jest.fn().mockResolvedValue(undefined) } as never,
-    );
-    const result = await service.markComplete('user-1', 'js-core', 'intro');
-    expect(result).toEqual({
-      id: 'l1',
-      slug: 'intro',
-      title: 'Intro',
-      durationMin: 10,
-      completed: true,
-    });
   });
 });
 

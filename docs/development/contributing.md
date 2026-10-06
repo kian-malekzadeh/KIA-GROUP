@@ -6,7 +6,7 @@
 2. **Respect the dependency rule:** departments never import departments.
    Cross-department behaviour goes through shared contracts, the platform
    (search/events/commerce) or new domain events.
-3. **Put code where it belongs.** New Academy logic → `apps/api/src/academy/…`
+3. **Put code where it belongs.** New Academy logic → `kia-group/kia-academy/…`
    + the `(academy)` route group. Platform logic → `group/` + `(group)`.
 4. **Brand values are not tunables.** Colours come from `@kia-group/brand`;
    the tests pin them. Change the package, not the stylesheet.

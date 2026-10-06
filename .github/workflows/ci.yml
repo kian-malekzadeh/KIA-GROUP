@@ -60,7 +60,8 @@ jobs:
         run: pnpm install --frozen-lockfile --ignore-scripts
 
       # `--ignore-scripts` skips the root postinstall that normally generates
-      # the Prisma client (git-ignored, custom output at apps/api/src/generated).
+      # the Prisma client (git-ignored, custom output at
+      # packages/platform/src/generated — the platform kernel package).
       # Generate it explicitly before lint/typecheck/build steps.
       - name: Generate Prisma client
         run: pnpm db:generate

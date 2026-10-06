@@ -12,7 +12,7 @@ import { randomInt } from 'crypto';
 import * as bcrypt from 'bcrypt';
 import * as QRCode from 'qrcode';
 import type { AuthUser } from '@kia-group/shared';
-import { PrismaService } from '../../../prisma/prisma.service';
+import { PrismaService } from '@kia-group/platform';
 import {
   decryptTotpSecret,
   encryptTotpSecret,

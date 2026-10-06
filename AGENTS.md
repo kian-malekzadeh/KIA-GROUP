@@ -15,15 +15,22 @@ domains, in one deployable app each:
 - `apps/group` — Next.js (port `3000`), default locale `fa` (RTL); proxies `/api` → API.
   Department pages live in **route groups**: `(academy)`, `(work)`, `(material)`,
   `(events)`, `(community)`, `(labs)`, `(group)`; platform surfaces (`dashboard`,
-  `admin`, `checkout`, `cart`) stay ungrouped.
-- `apps/api` — NestJS + Prisma (port `3001`, `/api`), a **modular monolith**:
-  - `src/group/` — platform: auth, admin, site-settings, media, email, sms,
-    contact, health, support/*, commerce/*, search
-  - `src/academy/` — KIA Academy domain
-  - `src/events/` — KIA Event domain
-  - `src/common/` — guards, rate limiting, **domain events**
-  - Departments never import each other: communicate via shared contracts,
-  the platform services, or `src/common/events`.
+  `admin`, `checkout`, `cart`) stay ungrouped.- `apps/api` — NestJS + Prisma (port `3001`, `/api`), a **modular monolith**
+  (the *connection point* that composes packages):
+  - `src/group/` — platform shell: auth, admin, sms, contact, health,
+    support/*, commerce/*, search
+  - `src/config/`, `src/main.ts`, `prisma/` — bootstrap, env schema, schema +
+    migrations + seed (client generates into `packages/platform/src/generated`)
+  - Department domains are **separate packages** under `kia-group/`:
+    `@kia-group/kia-academy` (courses, course-exams, learning-paths/
+    {roadmaps,assessments,readiness,test-banks}, students/{personality,progress})
+    and `@kia-group/kia-event` (competitions, challenges, bootcamps).
+  - `packages/platform` (`@kia-group/platform`) — the kernel every package
+    depends on: Prisma, guards, decorators, domain events, site-settings,
+    media, email (exited `src/common` + trio from the old `src/` layout).
+  - Departments never import each other (ESLint-banned): cross-department
+    reads go through shared contracts, the platform services, or
+    `packages/platform/src/common/events`.
 - `packages/brand` — the seven brand tokens (TS + CSS), single source of truth
 - `packages/permissions` — roles, admin access matrix, department role taxonomy
 - `packages/shared` — shared types/utils (must be built before seed/api)
@@ -37,7 +44,7 @@ CSS side — never hard-code a department hex.
 | Route | Purpose |
 | --- | --- |
 | `/` | Minimal Persian landing («ورود / ثبت‌نام» → `/education` + email sign-in → `/login`) — **no site header** for guests |
-| `/material` | Material Studio (ported, modular under `apps/group/src/features/material`) |
+| `/material` | Material Studio (ported, modular in `kia-group/kia-material/resources`) |
 | `/education` | Iranian phone OTP → profile → assessment gate (always phone-first; never auto-skips OTP) |
 | `/assessment` | First goal wizard (requires complete profile) → then free readiness test |
 | `/readiness` / `/readiness/test` | Free preparations (readiness) test — no purchase required |

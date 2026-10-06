@@ -35,13 +35,13 @@ import * as bcrypt from 'bcrypt';
 import { createHash, randomBytes, randomInt, randomUUID } from 'crypto';
 import { existsSync, mkdirSync, writeFileSync } from 'fs';
 import { join } from 'path';
-import { EmailService } from '../email/email.service';
-import { PrismaService } from '../../prisma/prisma.service';
-import { SiteSettingsService } from '../site-settings/site-settings.service';
+import { EmailService } from '@kia-group/platform';
+import { PrismaService } from '@kia-group/platform';
+import { SiteSettingsService } from '@kia-group/platform';
 import { SmsService } from '../sms/sms.service';
 import { TwoFactorService } from './two-factor/two-factor.service';
-import { EventBusService } from '../../common/events/event-bus.service';
-import { sniffImageMime } from '../../common/utils/image-sniff';
+import { EventBusService } from '@kia-group/platform';
+import { sniffImageMime } from '@kia-group/platform';
 import { LoginDto } from './dto/login.dto';
 
 import type { TwoFactorChallengeResponse } from './two-factor/two-factor.types';

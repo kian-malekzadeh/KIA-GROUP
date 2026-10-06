@@ -22,9 +22,9 @@ import type {
 } from '@kia-group/shared';
 import { IsOptional, IsString } from 'class-validator';
 import { Throttle } from '@nestjs/throttler';
-import { CurrentUser } from '../../../common/decorators/current-user.decorator';
-import { JwtAuthGuard } from '../../../common/guards/jwt-auth.guard';
-import { OptionalJwtAuthGuard } from '../../../common/guards/optional-jwt-auth.guard';
+import { CurrentUser } from '@kia-group/platform';
+import { JwtAuthGuard } from '@kia-group/platform';
+import { OptionalJwtAuthGuard } from '@kia-group/platform';
 import { CheckoutBodyDto } from './dto/checkout.dto';
 import { PaymentsService } from './payments.service';
 

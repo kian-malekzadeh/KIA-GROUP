@@ -1,8 +1,8 @@
 import { Body, Controller, Delete, Get, Param, Post, UseGuards } from '@nestjs/common';
 import type { AuthUser, CartResponse } from '@kia-group/shared';
 import { IsString, MinLength } from 'class-validator';
-import { CurrentUser } from '../../../common/decorators/current-user.decorator';
-import { JwtAuthGuard } from '../../../common/guards/jwt-auth.guard';
+import { CurrentUser } from '@kia-group/platform';
+import { JwtAuthGuard } from '@kia-group/platform';
 import { CartService } from './cart.service';
 
 class AddToCartBodyDto {

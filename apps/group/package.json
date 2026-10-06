@@ -14,6 +14,7 @@
   },
   "dependencies": {
     "@kia-group/brand": "workspace:*",
+    "@kia-group/kia-material": "workspace:*",
     "@kia-group/permissions": "workspace:*",
     "@kia-group/shared": "workspace:*",
     "lucide-react": "^1.38.0",

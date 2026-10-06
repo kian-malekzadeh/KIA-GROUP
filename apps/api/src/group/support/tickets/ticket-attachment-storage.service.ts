@@ -9,7 +9,7 @@ import {
   MAX_TICKET_ATTACHMENTS,
   TICKET_ATTACHMENT_ALLOWED_EXTENSIONS,
 } from '@kia-group/shared';
-import { assertSafePathSegment, resolveUnderRoot } from '../../../common/utils/safe-path';
+import { assertSafePathSegment, resolveUnderRoot } from '@kia-group/platform';
 
 const IMAGE_MAGIC: Array<{ mime: string; bytes: number[] }> = [
   { mime: 'image/jpeg', bytes: [0xff, 0xd8, 0xff] },

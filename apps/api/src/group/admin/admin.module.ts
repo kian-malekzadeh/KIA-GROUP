@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common';
-import { AdminAccessGuard } from '../../common/guards/admin-access.guard';
-import { RolesGuard } from '../../common/guards/roles.guard';
-import { MediaModule } from '../media/media.module';
+import { AdminAccessGuard } from '@kia-group/platform';
+import { RolesGuard } from '@kia-group/platform';
+import { MediaModule } from '@kia-group/platform';
 import { PaymentsModule } from '../commerce/payments/payments.module';
-import { SiteSettingsModule } from '../site-settings/site-settings.module';
+import { SiteSettingsModule } from '@kia-group/platform';
 import { AuthModule } from '../auth/auth.module';
 import { AdminAuditService } from './audit.service';
 import { AdminController } from './admin.controller';

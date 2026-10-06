@@ -1,6 +1,8 @@
 generator client {
   provider     = "prisma-client"
-  output       = "../src/generated/prisma"
+  // Generated client lives in the platform kernel package so every
+  // department package (and the API shell) shares one typed client.
+  output       = "../../../packages/platform/src/generated/prisma"
   runtime      = "nodejs"
   moduleFormat = "cjs"
 }

@@ -289,7 +289,7 @@ def build():
         [
             "apps/group/src/app — Next.js routes (pages)",
             "apps/group/src/components — shared UI (layout, exam, wizard, admin pieces)",
-            "apps/group/src/features/material — Material Studio (data/utils/panels/controller)",
+            "kia-group/kia-material/resources — Material Studio (data/utils/panels/controller)",
             "apps/group/src/styles — base.css tokens, admin.css, feature CSS",
             "apps/group/src/i18n — fa (default RTL), en, de, es message catalogs",
             "apps/api/src — Nest modules (auth, assessments, readiness, payments, admin, …)",
@@ -574,7 +574,7 @@ def build():
         [
             "Font catalog search + size slider; font cards (select/copy)",
             "Contrast text/bg pickers; Suggest Text Color (readable auto-pick)",
-            "State persistence via features/material/lib/storage.ts (localStorage)",
+            "State persistence via kia-group/kia-material/resources/lib/storage.ts (localStorage)",
         ],
     )
 
@@ -1274,7 +1274,7 @@ def build():
             "Prisma schema: apps/api/prisma/schema.prisma",
             "Shared domain: packages/shared/src/",
             "Web routes: apps/group/src/app/",
-            "Material feature: apps/group/src/features/material/",
+            "Material feature: kia-group/kia-material/resources/",
             "Design tokens: apps/group/src/styles/base.css",
             "Cloud agent notes: AGENTS.md",
             "README: setup, Pages, business model overview",

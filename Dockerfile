@@ -45,6 +45,12 @@ COPY packages/shared/package.json packages/shared/
 # compiles the workspace libraries (fresh type declarations for API build below).
 COPY packages/shared/tsconfig.json packages/shared/
 COPY packages/shared/src packages/shared/src
+# Platform kernel + the six kia-group/* department packages: the root
+# postinstall runs `pnpm db:generate` (client output → packages/platform/src)
+# followed by `pnpm build:libs`, so manifests AND sources must exist pre-install.
+COPY packages/platform/package.json packages/platform/tsconfig.json packages/platform/tsconfig.build.json packages/platform/
+COPY packages/platform/src packages/platform/src
+COPY kia-group kia-group
 COPY apps/api/package.json apps/api/
 # Prisma schema ships with the manifest layer: root `postinstall` generates the client.
 COPY apps/api/prisma apps/api/prisma
@@ -66,10 +72,14 @@ FROM deps AS builder
 COPY packages/permissions packages/permissions
 COPY packages/brand packages/brand
 COPY packages/shared packages/shared
+COPY packages/platform packages/platform
+COPY kia-group kia-group
 COPY apps/api apps/api
 
-RUN pnpm build:libs
+# Generate before building libs: the Prisma client is compiled INTO
+# packages/platform (schema.prisma generator output).
 RUN pnpm --filter @kia-group/api exec prisma generate
+RUN pnpm build:libs
 RUN pnpm --filter @kia-group/api build
 
 # ----------------------------------------------------- web builder -----------
@@ -78,6 +88,8 @@ FROM deps AS builder-web
 COPY packages/permissions packages/permissions
 COPY packages/brand packages/brand
 COPY packages/shared packages/shared
+# kia-material ships source (transpiled by Next via transpilePackages).
+COPY kia-group kia-group
 COPY apps/group apps/group
 
 ARG NEXT_PUBLIC_API_URL=
@@ -108,6 +120,10 @@ WORKDIR /app
 COPY --from=builder /app/package.json /app/pnpm-workspace.yaml ./
 COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/packages/shared ./packages/shared
+# Platform kernel + department packages (dist + node_modules links) — the API
+# dist requires them at runtime (`require('@kia-group/platform')` etc.).
+COPY --from=builder /app/packages/platform ./packages/platform
+COPY --from=builder /app/kia-group ./kia-group
 COPY --from=builder /app/apps/api/dist ./apps/api/dist
 COPY --from=builder /app/apps/api/prisma ./apps/api/prisma
 COPY --from=builder /app/apps/api/package.json ./apps/api/package.json

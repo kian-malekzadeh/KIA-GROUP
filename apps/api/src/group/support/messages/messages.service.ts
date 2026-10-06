@@ -4,7 +4,7 @@ import type {
   LearnerMessageDto,
 } from '@kia-group/shared';
 import { containsProgrammingCode } from '@kia-group/shared';
-import { PrismaService } from '../../../prisma/prisma.service';
+import { PrismaService } from '@kia-group/platform';
 
 @Injectable()
 export class MessagesService {

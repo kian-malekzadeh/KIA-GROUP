@@ -9,8 +9,8 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import type { AuthUser, LearnerTodoDto } from '@kia-group/shared';
-import { CurrentUser } from '../../../common/decorators/current-user.decorator';
-import { JwtAuthGuard } from '../../../common/guards/jwt-auth.guard';
+import { CurrentUser } from '@kia-group/platform';
+import { JwtAuthGuard } from '@kia-group/platform';
 import { CreateTodoDto, UpdateTodoDto } from './dto/todo.dto';
 import { TodosService } from './todos.service';
 

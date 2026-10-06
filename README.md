@@ -90,26 +90,40 @@ departments are independent business domains that share the platform instead of
 each other.
 
 ```text
-kia-group/
+KIA-GROUP-APP/
 ├── apps/
 │   ├── group/          # Next.js 16 — port 3000, fa locale, proxies /api → API
 │   │   ├── src/app/          # route groups: (academy) (work) (material) (events)
 │   │   │                     #   (community) (labs) (group) + dashboard/admin
-│   │   ├── src/features/     # modular features (material studio, …)
 │   │   └── public/brand/     # logos used across the app + this README
-│   └── api/            # NestJS 11 — port 3001 under /api (modular monolith)
-│       ├── src/group/        # PLATFORM: auth · admin · settings · media · email ·
-│       │                     #   sms · contact · health · support · commerce · search
-│       ├── src/academy/      # KIA Academy: courses · exams · assessments · readiness ·
-│       │                     #   roadmaps · progress · bootcamp · test banks
-│       ├── src/events/       # KIA Event: competitions · challenges
-│       ├── src/common/       # guards · rate limit · domain events
+│   └── api/            # NestJS 11 — port 3001 under /api (the connection point:
+│       │                     #   composes platform + department packages)
+│       ├── src/group/        # PLATFORM SHELL: auth · admin · sms · contact ·
+│       │                     #   health · support · commerce · search
 │       └── prisma/
-│           ├── schema.prisma       # 43 models, domain-ownership map in header
+│           ├── schema.prisma       # 43 models → generates client into platform
 │           └── migrations/         # init_baseline + hardening migrations
+├── kia-group/                 # ★ THE SIX DEPARTMENTS — each a separate package
+│   ├── kia-academy/     # @kia-group/kia-academy — courses · course-exams ·
+│   │   │                #   learning-paths (roadmaps·assessments·readiness·test-banks)
+│   │   │                #   students (personality·progress); lessons/teachers/
+│   │   │                #   certificates = README scaffolds
+│   ├── kia-event/       # @kia-group/kia-event — competitions · challenges · bootcamps;
+│   │   │                #   events/webinars/workshops = README scaffolds
+│   ├── kia-work/        # @kia-group/kia-work — jobs · freelancing · projects ·
+│   │   │                #   employers · talents · contracts (folder scaffold)
+│   ├── kia-material/    # @kia-group/kia-material — Material Studio (resources/) +
+│   │   │                #   templates/assets/tools/materials scaffolds
+│   ├── kia-lab/         # @kia-group/kia-lab — research · innovation · products ·
+│   │   │                #   experiments · publications (folder scaffold)
+│   └── kia-community/   # @kia-group/kia-community — members · discussions · groups ·
+│                        #   mentorship · networking (folder scaffold)
 ├── packages/
 │   ├── brand/          # @kia-group/brand — the seven brand tokens (TS + CSS)
 │   ├── permissions/    # @kia-group/permissions — roles · admin matrix · dept taxonomy
+│   ├── platform/       # @kia-group/platform — KERNEL: Prisma client · guards ·
+│   │   │               #   decorators · domain events · site-settings · media · email
+│   │   └── src/generated/prisma/   # prisma generate output (git-ignored)
 │   └── shared/         # @kia-group/shared — contracts, banks, grading, validators
 ├── docker/             # entrypoint scripts (wait-for-db, migrate, seed)
 ├── docs/               # architecture · security · database · development
@@ -121,12 +135,12 @@ kia-group/
 | Brand | Colour | Token | Department code |
 | --- | --- | --- | --- |
 | KIA GROUP | `#FFC864` | `--group-gold` (reserved) | platform |
-| KIA Academy | `#6464FF` | `--dept-academy` | `apps/api/src/academy/` · `app/(academy)` |
-| KIA Work | `#1687FF` | `--dept-work` | `app/(work)` → `/freelance` (frontend-only today) |
-| KIA Material | `#20BFA9` | `--dept-material` | `app/(material)` → Material Studio (frontend feature, no Nest domain) |
-| KIA Lab | `#19C37D` | `--dept-labs` | `app/(labs)` (coming-soon page, no backend domain yet) |
-| KIA Event | `#FF8A3D` | `--dept-events` | `apps/api/src/events/` · `app/(events)` |
-| KIA Community | `#D946EF` | `--dept-community` | `app/(community)` (coming-soon page, no backend domain yet) |
+| KIA Academy | `#6464FF` | `--dept-academy` | `kia-group/kia-academy/` · `app/(academy)` |
+| KIA Work | `#1687FF` | `--dept-work` | `kia-group/kia-work/` (scaffold) · `app/(work)` → `/freelance` |
+| KIA Material | `#20BFA9` | `--dept-material` | `kia-group/kia-material/` (Material Studio) · `app/(material)` |
+| KIA Lab | `#19C37D` | `--dept-labs` | `kia-group/kia-lab/` (scaffold) · `app/(labs)` |
+| KIA Event | `#FF8A3D` | `--dept-events` | `kia-group/kia-event/` · `app/(events)` |
+| KIA Community | `#D946EF` | `--dept-community` | `kia-group/kia-community/` (scaffold) · `app/(community)` |
 
 Colours are defined **once** in [`packages/brand`](packages/brand) and pinned by
 tests on both sides (TypeScript tokens *and* the stylesheet that consumes them).
@@ -134,9 +148,14 @@ On-fill ink is chosen by measured contrast, never by hand.
 
 ### Department isolation
 
-- Departments never import each other's services. Cross-department behaviour
-  goes through shared contracts, the platform (search / commerce / identity) or
-  **domain events** (`apps/api/src/common/events` — `group.user.registered`,
+- Each department lives in its own workspace package under `kia-group/` (like a
+  standalone project): it may depend on `@kia-group/platform` (kernel) and
+  `@kia-group/shared`, **never on another department** — enforced by ESLint
+  (`no-restricted-imports` in the shared flat config). `apps/api` is the
+  connection point that composes the packages in `app.module.ts`.
+- Cross-department behaviour goes through shared contracts, the platform
+  (search / commerce / identity) or
+  **domain events** (`packages/platform/src/common/events` — `group.user.registered`,
   `group.user.profile_completed`, `group.payment.completed`,
   `events.registration.created`, `academy.course.completed`).
 - Global search fans out to registered `SearchableProvider`s and tags every hit
@@ -149,8 +168,9 @@ On-fill ink is chosen by measured contrast, never by hand.
 session. Splitting them into seven Next apps would duplicate auth, i18n and the
 checkout flow for a separation that route groups + API domains already give
 (§34 modular monolith). Extraction to per-department apps remains possible: each
-department is already a self-contained folder with its own routes, API domain,
-token and search provider.
+department is already a self-contained package (own routes, API domain,
+token and search provider), so extraction stays a matter of unwiring it from
+`app.module.ts`.
 
 **Request flow:** Browser → Next.js (`rewrites /api/*`) → NestJS guards chain
 (`JwtAuthGuard` → `RolesGuard` → `AdminAccessGuard`) → DTO validation → Prisma →

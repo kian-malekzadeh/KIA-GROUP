@@ -5,8 +5,8 @@ import {
   ServiceUnavailableException,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { SiteSettingsService } from '../site-settings/site-settings.service';
-import { isProductionEnv } from '../../common/utils/node-env';
+import { SiteSettingsService } from '@kia-group/platform';
+import { isProductionEnv } from '@kia-group/platform';
 import { SmsProviderRegistry } from './providers/sms-provider.registry';
 
 @Injectable()

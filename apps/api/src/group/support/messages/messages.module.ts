@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
-import { AdminAccessGuard } from '../../../common/guards/admin-access.guard';
-import { RolesGuard } from '../../../common/guards/roles.guard';
-import { SiteSettingsModule } from '../../site-settings/site-settings.module';
+import { AdminAccessGuard } from '@kia-group/platform';
+import { RolesGuard } from '@kia-group/platform';
+import { SiteSettingsModule } from '@kia-group/platform';
 import { MessagesController } from './messages.controller';
 import { MessagesService } from './messages.service';
 

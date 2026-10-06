@@ -71,6 +71,8 @@ nohup.out
 
 # Generated Prisma client (apps/api)
 apps/api/src/generated/
+# Prisma client output lives in the platform kernel package (schema.prisma)
+packages/platform/src/generated/
 
 # Local tool artifacts
 .freebuff/
