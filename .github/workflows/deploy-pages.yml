@@ -60,11 +60,14 @@ jobs:
       - name: Bypass Jekyll processing
         run: touch apps/group/out/.nojekyll
 
-      - name: Configure Pages (enables the site on first run)
+      - name: Configure Pages (extracts base_url/base_path; validates the site)
         # actions/configure-pages v6.0.0
+        # NOTE: `enablement: true` is intentionally NOT used — the action
+        # documents that enabling the site requires a token other than
+        # GITHUB_TOKEN (PAT with repo scope / app with administration:write).
+        # Enabling Pages is a one-time repo-admin step:
+        #   Settings → Pages → Source = "GitHub Actions".
         uses: actions/configure-pages@45bfe0192ca1faeb007ade9deae92b16b8254a0d
-        with:
-          enablement: true
 
       - name: Upload artifact
         # actions/upload-pages-artifact v5.0.0
