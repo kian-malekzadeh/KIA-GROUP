@@ -137,14 +137,15 @@ describe('page background', () => {
     }
   });
 
-  it('paints the base colour on body and nothing else', () => {
+  it('paints the page gradient on body and nothing else', () => {
     expect(bodyRule).toBeDefined();
     const decls = declarations(bodyRule!.body);
-    expect(decls.get('background')).toBe('var(--bg)');
-    for (const property of ['background-image', 'background-attachment', 'background-repeat']) {
-      expect(decls.get(property), `body must not carry ${property} — .site-aurora owns the wash`)
-        .toBeUndefined();
-    }
+    const bg = decls.get('background') ?? '';
+    // The page is one soft gradient built from --bg → --bg-elevated (light theme).
+    expect(bg).toMatch(/^linear-gradient\(.*var\(--bg\).*var\(--bg-elevated\).*\)$/);
+    expect(decls.get('background-image')).toBeUndefined();
+    expect(decls.get('background-attachment')).toBeUndefined();
+    expect(decls.get('background-repeat')).toBeUndefined();
   });
 
   it('has no second aurora token competing with .site-aurora', () => {

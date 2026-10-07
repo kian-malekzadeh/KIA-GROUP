@@ -99,14 +99,16 @@ describe('Kia Group brand', () => {
 });
 
 describe('Kia Group departments', () => {
-  const hub = readFileSync(path.join(WEB, 'src', 'components', 'hub', 'HubDoors.tsx'), 'utf8');
+  const hub = readFileSync(
+    path.join(WEB, 'src', 'components', 'hub', 'DepartmentSolarSystem.tsx'),
+    'utf8',
+  );
 
-  it('offers six departments, each a real link, in the grid order', () => {
-    // The sequence is the requested layout (UX-29): three columns, academy ·
-    // events · material on the first row, work · community · labs on the
-    // second. The grid is RTL, so the first entry is the right-hand card —
-    // which is also why this doubles as the reading and tab order.
-    const hrefs = [...hub.matchAll(/<Link href="([^"]+)" className="door/g)].map((m) => m[1]);
+  it('offers six departments, each a real link, in the orbit order', () => {
+    // The mock fixes the orbit order: academy · event · material · work ·
+    // community · lab, from the innermost ring outwards. PLANETS is spelled
+    // out in that order, and each entry links to the department's route.
+    const hrefs = [...hub.matchAll(/href: '([^']+)'/g)].map((m) => m[1]);
     expect(hrefs).toEqual([
       '/tracks',
       '/events',
@@ -117,16 +119,15 @@ describe('Kia Group departments', () => {
     ]);
   });
 
-  it('lays the departments out in three columns', () => {
-    // Two columns could not carry six cards without a third row, and the tiles
-    // no longer hold a summary, so nothing squeezes at this width.
-    const css = readFileSync(path.join(WEB, 'src', 'styles', 'landing.css'), 'utf8');
-    const grid = css.match(/^\.landing-doors--depts \{[^}]*\}/m);
-    expect(grid?.[0]).toMatch(/grid-template-columns: repeat\(3, minmax\(0, 1fr\)\);/);
-    // One column still wins on a phone.
-    expect(css).toMatch(
-      /@media \(max-width: 720px\) \{\s*\n\s*\.landing-doors--depts \{\s*\n\s*grid-template-columns: 1fr;/,
-    );
+  it('lays the departments out on six orbit rings', () => {
+    // The mock supersedes the old three-column grid on the hub: one ring per
+    // department, 36% → 86% of the square stage, each with a comet pulse.
+    const css = readFileSync(path.join(WEB, 'src', 'styles', 'hub.css'), 'utf8');
+    for (const orbit of ['1', '2', '3', '4', '5', '6']) {
+      expect(css).toMatch(new RegExp(`\\.solar__orbit--${orbit} \\{`));
+      expect(css).toMatch(new RegExp(`\\.solar__pulse--${orbit} \\{`));
+    }
+    expect(css).toContain('aspect-ratio: 1 / 1;');
   });
 
   it('titles them as one family in both languages', () => {
@@ -152,7 +153,7 @@ describe('Kia Group departments', () => {
     expect(enDoors.heading).toBe('Kia Group departments');
   });
 
-  it('routes every card title through the dictionary, never a literal', () => {
+  it('routes every planet title through the dictionary, never a literal', () => {
     const titles = [...hub.matchAll(/dashboard\.doors\.(\w+Title)/g)].map((m) => m[1]);
     expect(titles.sort()).toEqual([
       'academyTitle',

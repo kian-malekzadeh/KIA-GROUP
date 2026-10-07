@@ -653,12 +653,19 @@ export const fa = {
     },
     doors: {
       heading: 'دپارتمان‌های کیا گروه',
+      orbitsSub: 'منظومهٔ اکوسیستم کیا',
       academyTitle: 'کیا آکادمی',
+      academyShort: 'آکادمی',
       workTitle: 'کیا ورک',
+      workShort: 'ورک',
       materialTitle: 'کیا متریال',
+      materialShort: 'متریال',
       eventsTitle: 'کیا ایونت',
+      eventsShort: 'ایونت',
       communityTitle: 'کیا کامیونیتی',
+      communityShort: 'کامیونیتی',
       labsTitle: 'کیا لب',
+      labsShort: 'لب',
     },
     tile: {
       roadmap: {

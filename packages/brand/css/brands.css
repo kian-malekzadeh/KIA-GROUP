@@ -16,10 +16,10 @@
 :root {
   --group-gold: #ffc864;
 
-  --dept-academy: #6464ff;   /* indigo     — learning                            */
-  --dept-work: #1687ff;      /* blue       — jobs, hiring & projects             */
-  --dept-material: #20bfa9;  /* teal       — materials, resources & tools        */
-  --dept-labs: #19c37d;      /* green      — research & innovation               */
-  --dept-events: #ff8a3d;    /* orange     — competitions, events, bootcamps     */
-  --dept-community: #d946ef; /* magenta    — people talking                      */
+  --dept-academy: #6464ff;   /* indigo   — learning                            */
+  --dept-work: #6492ff;      /* blue     — jobs, hiring & projects             */
+  --dept-material: #148165;  /* green    — materials, resources & tools        */
+  --dept-labs: #28c793;      /* green    — research & innovation               */
+  --dept-events: #e32b1b;    /* red      — competitions, events, bootcamps     */
+  --dept-community: #ff7344; /* coral    — people talking                      */
 }

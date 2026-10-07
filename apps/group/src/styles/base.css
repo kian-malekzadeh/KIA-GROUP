@@ -345,11 +345,11 @@ html {
 }
 
 body {
-  /* The page background has exactly one owner: this flat base colour plus the
+  /* The page background has exactly one owner: this soft gradient plus the
      fixed `.site-aurora` wash in components/layout/SiteAurora.tsx. Route
      shells stay transparent so every page inherits the same background —
      never repaint it locally (see .dash-panel, .material-studio-root). */
-  background: var(--bg);
+  background: linear-gradient(165deg, var(--bg) 0%, var(--bg-elevated) 100%);
   color: var(--text);
   display: flex;
   flex-direction: column;
@@ -791,10 +791,9 @@ input[type='tel'],
    are provably the same colour. `--tile-on-fill` picks ink or white for the
    contrast each hue needs, and the tint/hairline are mixes of the same hue, so
    the whole tile shifts with the token. The ink is not a matter of taste here:
-   the official colours are light, and white ink on labs' green measures 2.3:1
-   where the dark ink measures 7.9:1. Only academy keeps white — 4.37:1 against
-   the ink's 4.14:1 — because its indigo is the one fill dark enough that white
-   still wins. */
+   it is measured (WCAG, via `readableInk` in the brand's contrast.ts) against
+   each fill — most of the palette is light enough to wear the dark ink; the
+   deep fills (academy, material) keep white. */
 .dept--academy {
   --dept: var(--dept-academy);
   --tile-on-fill: #ffffff;
@@ -805,11 +804,11 @@ input[type='tel'],
 }
 .dept--material {
   --dept: var(--dept-material);
-  --tile-on-fill: var(--ink-950);
+  --tile-on-fill: #ffffff;
 }
 .dept--events {
   --dept: var(--dept-events);
-  --tile-on-fill: var(--ink-950);
+  --tile-on-fill: #ffffff;
 }
 .dept--community {
   --dept: var(--dept-community);

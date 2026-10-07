@@ -4,9 +4,9 @@
  * The six Kia Group departments — one registry, so nothing about a department
  * is written down twice.
  *
- * The rail (TopBar) and the hub grid (HubDoors) both describe a department from
- * this list: a department's card and the rail it turns into can therefore never
- * disagree about its colour or its route.
+ * The rail (TopBar) and the departments hub (DepartmentSolarSystem) both
+ * describe a department from this list: a department's planet and the rail it
+ * turns into can therefore never disagree about its colour or its route.
  *
  * There is no per-department *glyph* here. The rail wears the Kia Group emblem
  * painted in the department's colour — the same mark its page header shows — so

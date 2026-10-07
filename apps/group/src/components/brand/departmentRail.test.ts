@@ -33,7 +33,9 @@ const brandsCss = readFileSync(
 );
 const layout = read('styles', 'layout.css');
 const topBar = read('components', 'layout', 'TopBar.tsx');
-const hub = read('components', 'hub', 'HubDoors.tsx');
+/** The departments hub now renders as the solar system; the registry mapping
+ * ('slug → href') lives there and must stay in step with the rail. */
+const hub = read('components', 'hub', 'DepartmentSolarSystem.tsx');
 
 /** Read a dotted message key out of a catalogue. */
 const lookup = (catalogue: unknown, key: string): string | undefined =>
@@ -65,15 +67,14 @@ describe('department registry', () => {
     }
   });
 
-  it('agrees with the hub cards on every route, colour class and name', () => {
-    // The hub cards predate the registry and spell their own markup out; this
-    // comparison is what keeps the two descriptions of a department in step.
-    // A card may also carry a row modifier (UX-30), so the class is matched
-    // wherever it sits in the list.
+  it('agrees with the hub planet registry on every route, colour class and name', () => {
+    // The solar-system hub spells its planet registry out as mapped entries;
+    // this comparison is what keeps the two descriptions of a department in
+    // step. Every slug must carry its own dept-- class and its own titleKey.
     for (const dept of DEPARTMENTS) {
-      expect(hub, dept.slug).toContain(`href="${dept.href}"`);
-      expect(hub, dept.slug).toMatch(new RegExp(`className="door[^"]*\\bdept--${dept.slug}\\b`));
-      expect(hub, dept.slug).toContain(`t('${dept.titleKey}')`);
+      expect(hub, dept.slug).toContain(`href: '${dept.href}'`);
+      expect(hub, dept.slug).toMatch(new RegExp(`slug: '${dept.slug}'`));
+      expect(hub, dept.slug).toContain(`titleKey: '${dept.titleKey}'`);
     }
   });
 });

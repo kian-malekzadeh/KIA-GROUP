@@ -2,7 +2,7 @@
 
 import type { ReactNode } from 'react';
 import { usePathname } from 'next/navigation';
-import { Footer } from '@/components/layout/Footer';
+
 import { PageBackButton } from '@/components/layout/PageBackButton';
 import { SiteAurora } from '@/components/layout/SiteAurora';
 import { TopBar } from '@/components/layout/TopBar';
@@ -53,7 +53,6 @@ export function SiteChrome({ children }: { children: ReactNode }) {
           <TopBar />
           <div className="panel-content">
             {main}
-            <Footer />
           </div>
         </div>
       ) : (

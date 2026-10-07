@@ -393,3 +393,328 @@
     grid-template-columns: 1fr;
   }
 }
+
+/* =============================================================================
+   Department solar system — the departments hub (/home, dashboard top)
+   One Kia Group sun, six department planets on six orbit rings, each ring
+   swept by a comet pulse. Replaces the old door grid (UX-29/30).
+
+   Colour discipline: the sun is Kia Group — gold rim, gold wordmark, and
+   `var(--group-gold)` appears only on the sun. Every planet, ring and pulse
+   derives from its own `var(--dept-<slug>)` token; this block writes no raw
+   hex, so `packages/brand` stays the single source of truth.
+   ========================================================================== */
+
+.dash-doors--solar .dash-doors__heading {
+  text-align: center;
+}
+
+.solar__sub {
+  margin: 0 0 var(--space-6);
+  text-align: center;
+  font-family: var(--font-mono);
+  font-size: var(--fs-micro);
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-indent: 0.22em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+}
+
+[dir='rtl'] .solar__sub {
+  font-family: var(--font-fa);
+  letter-spacing: normal;
+  text-indent: 0;
+}
+
+/* --- the square stage ------------------------------------------------------ */
+
+.solar__stage {
+  position: relative;
+  width: min(100%, 640px);
+  margin-inline: auto;
+  aspect-ratio: 1 / 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  container-type: size;
+
+  /* The sky: a quiet blueprint grid so the system reads as a diagram. */
+  background-color: var(--bg-card);
+  background-image:
+    linear-gradient(to right, color-mix(in srgb, var(--text) 5%, transparent) 1px, transparent 1px),
+    linear-gradient(to bottom, color-mix(in srgb, var(--text) 5%, transparent) 1px, transparent 1px);
+  background-size: 64px 64px;
+  border: 1px solid var(--border-soft);
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+  user-select: none;
+}
+
+/* --- the Kia Group sun ------------------------------------------------------ */
+
+.solar__sun {
+  position: absolute;
+  z-index: var(--z-dropdown); /* above every ring, pulse and planet */
+  width: 22%;
+  height: 22%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle at 50% 42%,
+    var(--ink-800) 0%,
+    var(--ink-950) 62%,
+    black 100%
+  );
+  border: 1px solid color-mix(in srgb, var(--group-gold) 55%, transparent);
+  animation: solar-core-pulse 4s ease-in-out infinite;
+  transition: transform var(--dur-slow) var(--ease-out);
+}
+
+.solar__sun:hover {
+  transform: scale(1.05);
+}
+
+@keyframes solar-core-pulse {
+  0%,
+  100% {
+    box-shadow:
+      0 0 0 1px color-mix(in srgb, var(--group-gold) 25%, transparent),
+      0 0 22px 2px color-mix(in srgb, var(--group-gold) 22%, transparent),
+      var(--shadow-md);
+  }
+  50% {
+    box-shadow:
+      0 0 0 1.5px color-mix(in srgb, var(--group-gold) 42%, transparent),
+      0 0 34px 5px color-mix(in srgb, var(--group-gold) 30%, transparent),
+      var(--shadow-lg);
+  }
+}
+
+.solar__sun-title {
+  font-size: clamp(18px, 5.4cqw, 30px);
+  font-weight: 900;
+  letter-spacing: 0.04em;
+  line-height: 1;
+  color: var(--group-gold);
+  text-shadow: 0 2px 10px rgb(0 0 0 / 0.5);
+}
+
+.solar__sun-sub {
+  margin-top: 0.3rem;
+  font-size: clamp(8px, 1.9cqw, 12px);
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-indent: 0.2em;
+  text-transform: uppercase;
+  color: var(--ink-0);
+  text-shadow: 0 1px 6px rgb(0 0 0 / 0.5);
+}
+
+/* --- orbit rings ------------------------------------------------------------ */
+
+.solar__orbit {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.solar__orbit--1 { --orbit-color: var(--dept-academy); }
+.solar__orbit--2 { --orbit-color: var(--dept-events); }
+.solar__orbit--3 { --orbit-color: var(--dept-material); }
+.solar__orbit--4 { --orbit-color: var(--dept-work); }
+.solar__orbit--5 { --orbit-color: var(--dept-community); }
+.solar__orbit--6 { --orbit-color: var(--dept-labs); }
+
+.solar__orbit--1,
+.solar__orbit--3,
+.solar__orbit--5,
+.solar__orbit--6 {
+  border: 2px solid color-mix(in srgb, var(--orbit-color) 27%, transparent);
+  box-shadow: 0 0 8px color-mix(in srgb, var(--orbit-color) 8%, transparent);
+}
+
+/* Dashed rings alternate with solid ones, as in the approved mock. */
+.solar__orbit--2,
+.solar__orbit--4 {
+  border: 2px dashed color-mix(in srgb, var(--orbit-color) 32%, transparent);
+  box-shadow: 0 0 8px color-mix(in srgb, var(--orbit-color) 8%, transparent);
+}
+
+/* --- comet pulses ----------------------------------------------------------- */
+
+.solar__pulse {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.solar__pulse--1 { --orbit-color: var(--dept-academy); animation: solar-spin 11s linear infinite; }
+.solar__pulse--2 { --orbit-color: var(--dept-events); animation: solar-spin 17s linear infinite; }
+.solar__pulse--3 { --orbit-color: var(--dept-material); animation: solar-spin 25s linear infinite; }
+.solar__pulse--4 { --orbit-color: var(--dept-work); animation: solar-spin 34s linear infinite; }
+.solar__pulse--5 { --orbit-color: var(--dept-community); animation: solar-spin 44s linear infinite; }
+.solar__pulse--6 { --orbit-color: var(--dept-labs); animation: solar-spin 56s linear infinite; }
+
+@keyframes solar-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.solar__pulse-marker {
+  position: absolute;
+  top: -3px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.solar__pulse-head {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--orbit-color);
+  box-shadow:
+    0 0 4px var(--orbit-color),
+    0 0 10px color-mix(in srgb, var(--orbit-color) 45%, transparent);
+}
+
+.solar__pulse-tail {
+  position: absolute;
+  right: 50%;
+  top: 50%;
+  transform: translateY(-50%);
+  height: 1px;
+  filter: blur(0.2px);
+}
+
+/* Each comet tail trails behind its own planet's colour. */
+.solar__pulse--1 .solar__pulse-tail { width: 30px; }
+.solar__pulse--2 .solar__pulse-tail { width: 34px; }
+.solar__pulse--3 .solar__pulse-tail { width: 38px; }
+.solar__pulse--4 .solar__pulse-tail { width: 42px; }
+.solar__pulse--5 .solar__pulse-tail { width: 46px; }
+.solar__pulse--6 .solar__pulse-tail { width: 50px; }
+
+.solar__pulse-tail {
+  background: linear-gradient(
+    to left,
+    color-mix(in srgb, var(--orbit-color) 70%, transparent) 0%,
+    color-mix(in srgb, var(--orbit-color) 25%, transparent) 50%,
+    transparent 100%
+  );
+}
+
+/* --- planets ----------------------------------------------------------------- */
+
+.solar__planet {
+  position: absolute;
+  z-index: var(--z-sticky); /* above rings and pulses, below the sun */
+  /* `top` / `left` carry the planet's centre on its orbit (the approved mock's
+     geometry), so the centre point must fold back onto the box corner. */
+  transform: translate(-50%, -50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  border: 1px solid color-mix(in srgb, var(--dept) 32%, transparent);
+  /* Lit sphere: one highlight position per planet, shades derived from --dept. */
+  background: radial-gradient(
+    circle at var(--planet-light, 70% 68%),
+    color-mix(in srgb, var(--dept) 76%, white) 0%,
+    var(--dept) 45%,
+    color-mix(in srgb, var(--dept) 72%, black) 100%
+  );
+  box-shadow:
+    0 3px 10px color-mix(in srgb, var(--dept) 35%, transparent),
+    0 0 14px color-mix(in srgb, var(--dept) 18%, transparent),
+    inset -3px 3px 9px rgb(0 0 0 / 0.22);
+  color: var(--tile-on-fill); /* the measured ink for this department's fill */
+  text-decoration: none;
+  cursor: pointer;
+  transition:
+    transform 0.25s var(--ease-out),
+    box-shadow 0.25s var(--ease-out),
+    filter 0.25s var(--ease-out);
+}
+
+.solar__planet::before {
+  content: '';
+  position: absolute;
+  width: 32%;
+  height: 32%;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    rgb(255 255 255 / 0.42) 0%,
+    rgb(255 255 255 / 0.14) 45%,
+    rgb(255 255 255 / 0) 75%
+  );
+  pointer-events: none;
+}
+
+.solar__planet:hover {
+  transform: translate(-50%, -50%) scale(1.08);
+  filter: brightness(1.06);
+}
+
+.solar__planet:focus-visible {
+  outline: 2px solid var(--group-gold);
+  outline-offset: 3px;
+  box-shadow:
+    0 3px 10px color-mix(in srgb, var(--dept) 35%, transparent),
+    0 0 14px color-mix(in srgb, var(--dept) 18%, transparent),
+    inset -3px 3px 9px rgb(0 0 0 / 0.22);
+}
+
+/* Highlight direction per planet, from the approved mock. */
+.solar__planet--academy { --planet-light: 70% 70%; }
+.solar__planet--events { --planet-light: 92% 50%; }
+.solar__planet--material { --planet-light: 28% 28%; }
+.solar__planet--work { --planet-light: 72% 28%; }
+.solar__planet--community { --planet-light: 92% 50%; }
+.solar__planet--labs { --planet-light: 72% 72%; }
+
+.solar__label {
+  position: relative;
+  z-index: 1;
+  font-size: clamp(9px, 2.1cqw, 15px);
+  font-weight: 800;
+  letter-spacing: 0.01em;
+  line-height: 1;
+  white-space: nowrap;
+  text-align: center;
+  text-shadow: 0 1px 2px color-mix(in srgb, var(--dept) 45%, transparent);
+}
+
+[dir='rtl'] .solar__label {
+  letter-spacing: normal;
+  font-family: var(--font-fa);
+}
+
+/* On narrow stages the long community label needs breathing room. */
+@media (max-width: 420px) {
+  .solar__label {
+    font-size: clamp(8px, 2.4cqw, 12px);
+  }
+}
+
+/* Reduced-motion: freeze the orbits, keep the diagram readable. */
+@media (prefers-reduced-motion: reduce) {
+  .solar__pulse,
+  .solar__sun {
+    animation: none;
+  }
+
+  .solar__planet,
+  .solar__sun {
+    transition: none;
+  }
+}

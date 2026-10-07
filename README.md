@@ -136,11 +136,11 @@ KIA-GROUP-APP/
 | --- | --- | --- | --- |
 | KIA GROUP | `#FFC864` | `--group-gold` (reserved) | platform |
 | KIA Academy | `#6464FF` | `--dept-academy` | `kia-group/kia-academy/` · `app/(academy)` |
-| KIA Work | `#1687FF` | `--dept-work` | `kia-group/kia-work/` (scaffold) · `app/(work)` → `/freelance` |
-| KIA Material | `#20BFA9` | `--dept-material` | `kia-group/kia-material/` (Material Studio) · `app/(material)` |
-| KIA Lab | `#19C37D` | `--dept-labs` | `kia-group/kia-lab/` (scaffold) · `app/(labs)` |
-| KIA Event | `#FF8A3D` | `--dept-events` | `kia-group/kia-event/` · `app/(events)` |
-| KIA Community | `#D946EF` | `--dept-community` | `kia-group/kia-community/` (scaffold) · `app/(community)` |
+| KIA Work | `#6492FF` | `--dept-work` | `kia-group/kia-work/` (scaffold) · `app/(work)` → `/freelance` |
+| KIA Material | `#148165` | `--dept-material` | `kia-group/kia-material/` (Material Studio) · `app/(material)` |
+| KIA Lab | `#28C793` | `--dept-labs` | `kia-group/kia-lab/` (scaffold) · `app/(labs)` |
+| KIA Event | `#E32B1B` | `--dept-events` | `kia-group/kia-event/` · `app/(events)` |
+| KIA Community | `#FF7344` | `--dept-community` | `kia-group/kia-community/` (scaffold) · `app/(community)` |
 
 Colours are defined **once** in [`packages/brand`](packages/brand) and pinned by
 tests on both sides (TypeScript tokens *and* the stylesheet that consumes them).

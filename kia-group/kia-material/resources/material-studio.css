@@ -1,4 +1,4 @@
-/* Scoped to Material Studio — do not override global site theme */
+/* Inherits the shared page background from body + .site-aurora */
 .material-studio-root {
   --primary-deep: var(--ink-950);
   --primary-accent: var(--brand-700);

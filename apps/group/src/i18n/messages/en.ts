@@ -653,12 +653,19 @@ export const en = {
     },
     doors: {
       heading: 'Kia Group departments',
+      orbitsSub: 'The Kia ecosystem',
       academyTitle: 'KIA Academy',
+      academyShort: 'Academy',
       workTitle: 'KIA Work',
+      workShort: 'Work',
       materialTitle: 'KIA Material',
+      materialShort: 'Material',
       eventsTitle: 'KIA Event',
+      eventsShort: 'Event',
       communityTitle: 'KIA Community',
+      communityShort: 'Community',
       labsTitle: 'KIA Lab',
+      labsShort: 'Lab',
     },
     tile: {
       roadmap: {
