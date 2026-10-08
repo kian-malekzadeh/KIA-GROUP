@@ -49,6 +49,8 @@
   flex-direction: column;
   align-items: center;
   gap: var(--space-2);
+  /* h1 reset — the class owns every typographic decision. */
+  margin: 0;
   font-family: var(--font-display);
   font-size: clamp(1.5rem, 3.4vw, 2.25rem);
   font-weight: 800;
@@ -76,7 +78,8 @@
 /* The hero promise is the brand tagline, not a marketing sentence: it reads
    as a single line, so it must not inherit the 25ch measure that wrapped a
    two-line headline. Sized down from `--fs-display` so the whole tagline
-   sits on one line next to the wordmark. */
+   sits on one line next to the wordmark. It is a supporting line (h3), not
+   the display headline — dimmed so the wordmark leads. */
 .landing-title {
   margin-top: var(--space-6);
   font-family: var(--font-pelak-stack);
@@ -84,7 +87,7 @@
   font-weight: 800;
   letter-spacing: -0.035em;
   line-height: 1.15;
-  color: var(--text);
+  color: var(--text-dim);
   white-space: nowrap;
 }
 

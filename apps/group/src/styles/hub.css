@@ -439,14 +439,9 @@
   justify-content: center;
   container-type: size;
 
-  /* The sky: a quiet blueprint grid so the system reads as a diagram. */
-  background-color: var(--bg-card);
-  background-image:
-    linear-gradient(to right, color-mix(in srgb, var(--text) 5%, transparent) 1px, transparent 1px),
-    linear-gradient(to bottom, color-mix(in srgb, var(--text) 5%, transparent) 1px, transparent 1px);
-  background-size: 64px 64px;
-  border: 1px solid var(--border-soft);
-  border-radius: var(--radius-xl);
+  /* Transparent stage (feedback: the whole painted background — card fill,
+     blueprint grid and frame — is gone); the sun, orbits and planets carry
+     the diagram on their own. */
   overflow: hidden;
   user-select: none;
 }

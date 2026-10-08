@@ -51,14 +51,15 @@ export default function HomePage() {
 
       <main className="landing-intro container">
         <header className="landing-hero">
-          <span className="landing-brand">
+          {/* The brand wordmark roots the heading outline; the tagline (the
+              hero promise, one canonical string shared with the site wordmark
+              and pinned by the brand suite) sits under it as a supporting
+              heading (h3, dimmed) per UX feedback. */}
+          <h1 className="landing-brand">
             <BrandMark className="landing-brand-mark" title="" />
             {t('common.brand')}
-          </span>
-
-          {/* The brand tagline is the hero promise — one canonical string,
-              shared with the site wordmark and pinned by the brand suite. */}
-          <h1 className="landing-title">{t('common.tagline')}</h1>
+          </h1>
+          <h3 className="landing-title">{t('common.tagline')}</h3>
           <p className="landing-body">{t('landing.heroBody')}</p>
 
           <div className="hero-actions landing-min-actions">
