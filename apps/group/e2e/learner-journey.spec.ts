@@ -17,8 +17,10 @@ test.describe('Learner journey', () => {
 
   test('landing page shows phone and email sign-in CTAs', async ({ page }) => {
     await page.goto('/');
-    // The hero carries the canonical brand tagline (Learn · Work · Create · …).
-    await expect(page.getByRole('heading', { level: 1 })).toContainText(/learn|work|create/i);
+    // The hero carries the canonical brand tagline (Learn · Work · Create · …)
+    // as a supporting heading — the brand wordmark is the h1 root.
+    await expect(page.getByRole('heading', { level: 3 })).toContainText(/learn|work|create/i);
+    await expect(page.getByRole('heading', { level: 1 })).toContainText(/kia group/i);
     // Phone-first auth door — the single primary CTA on the minimal guest landing.
     const authCta = page.getByRole('link', { name: /Sign in \/ Sign up/i });
     await expect(authCta).toBeVisible();
