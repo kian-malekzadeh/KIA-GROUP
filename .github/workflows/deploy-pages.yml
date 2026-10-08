@@ -50,6 +50,13 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile --ignore-scripts
 
+      # pnpm install --ignore-scripts skips the root postinstall that normally
+      # generates the Prisma client (git-ignored, custom output at
+      # packages/platform/src/generated). Generate it explicitly so the build
+      # can resolve it (see apps/api/prisma.config.ts).
+      - name: Generate Prisma client
+        run: pnpm db:generate
+
       - name: Build static demo export
         # PAGES_REPO_NAME keeps the basePath in sync with this repository's name,
         # so a rename (e.g. Kia-Academy → KIA-GROUP) can never stale the mirror.

@@ -318,28 +318,24 @@
     flex: 0 0 auto;
   }
 
-  /* Feedback: the brand lockup sits exactly at the rail's vertical middle —
-     not just optically near the top. `top: 50%` + `translateY(-50%)` is exact
-     whatever the viewport height and whatever the other rows total, and the
-     rail is `position: sticky` (a containing block), so the button anchors to
-     the rail, not the page. Out of the flow, the user cluster becomes the
-     rail's first row; the compact icon rail keeps the old top-anchored mark. */
+  /* Feedback: the brand lockup sits exactly at the top of the page, on the
+     top edge of the 18.5rem rail — not centred in it. `top: 0` +
+     `translateY(0)` is exact whatever the viewport height; the top edge of the
+     rail is the top edge of the page. The wordmark is then nudged down 2px so
+     its ink bbox centre lands on the button's top edge, matching the mark
+     line, which never carries half-leading. */
   .panel-shell .topbar:not(.panel-nav--compact) .logo {
     position: absolute;
-    top: 50%;
+    top: 0;
     inset-inline: var(--space-4);
     width: auto;
-    transform: translateY(-50%);
+    transform: translateY(0);
   }
 
-  /* Optical centring for the wordmark. `align-items: center` already puts the
-     line box dead centre in `.logo`, but the *ink* is not: `[dir='rtl'] .logo`
-     renders the Latin caps in pelak, whose font box reserves 17px ascent +
-     9px descent for Persian glyphs (ی، ج، …) that "KIA GROUP" never draws. The
-     cap band therefore rides ~2px above the button's middle — and above the
-     brand mark, whose box centre is the same 39.72px line. The offset is
-     line-height-independent (half-leading cancels), so it needs a real nudge:
-     measured 2px down puts the ink's bbox centre on the parent centre. */
+  /* Optical top-anchoring for the wordmark. `align-items: center` puts the
+     line box dead centre in `.logo`; the black caps sit 2px above that line,
+     so `translateY(2px)` carries the ink's bbox centre onto the button's top
+     edge and the brand reads as _at the top_, not centred in the rail. */
   .panel-shell .logo .logo-text {
     transform: translateY(2px);
   }

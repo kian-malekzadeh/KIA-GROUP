@@ -54,7 +54,13 @@
     grid-column: 2;
     grid-row: 1;
     justify-self: center;
-    align-self: center;
+    /* Brand centred in both axes on mobile: `top: 50%` + `translateY(-50%)`
+       is exact whatever the viewport height and whatever the other rows
+       total, and the bar is a fixed-height sticky pill so the button anchors
+       to the bar, not the page. */
+    position: relative;
+    top: 50%;
+    transform: translateY(-50%);
     min-width: 0;
     max-width: 100%;
     height: 40px;
