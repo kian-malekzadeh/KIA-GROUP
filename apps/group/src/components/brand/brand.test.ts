@@ -105,17 +105,18 @@ describe('Kia Group departments', () => {
   );
 
   it('offers six departments, each a real link, in the orbit order', () => {
-    // The mock fixes the orbit order: academy · event · material · work ·
-    // community · lab, from the innermost ring outwards. PLANETS is spelled
-    // out in that order, and each entry links to the department's route.
+    // User feedback reordered the rings small → large by planet size: the
+    // smallest planet (labs) takes orbit 1 and the largest (community) takes
+    // orbit 6. PLANETS is spelled out in that order, and each entry links to
+    // the department's route.
     const hrefs = [...hub.matchAll(/href: '([^']+)'/g)].map((m) => m[1]);
     expect(hrefs).toEqual([
-      '/tracks',
-      '/events',
-      '/material',
-      '/freelance',
-      '/community',
       '/labs',
+      '/freelance',
+      '/events',
+      '/tracks',
+      '/material',
+      '/community',
     ]);
   });
 
@@ -173,7 +174,9 @@ describe('Kia Group departments', () => {
       const page = path.join(WEB, 'src', 'app', `(${slug})`, slug, 'page.tsx');
       const src = readFileSync(page, 'utf8');
       expect(src, slug).toContain(`t('${slug}.title')`);
-      expect(src, slug).toContain(`t('${slug}.sub')`);
+      // The header tagline (`.sub`) was removed with the per-page header; the
+      // door tile keeps the title and the coming-soon copy.
+      expect(src, slug).not.toContain(`t('${slug}.sub')`);
       expect(src, slug).toContain(`t('${slug}.soon')`);
       // A coming-soon department must not look tappable.
       expect(src, slug).toContain('door--soon');

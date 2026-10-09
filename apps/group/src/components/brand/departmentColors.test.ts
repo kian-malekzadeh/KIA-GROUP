@@ -161,8 +161,10 @@ describe('department colours', () => {
 describe('department marks in the markup', () => {
   const appDir = path.join(HERE, '..', '..', 'app');
 
-  it('gives every department page a mark in its own colour', () => {
-    // Each department's pages live in its own route group under src/app.
+  it('keeps inline dept marks off the department hub pages', () => {
+    // Feedback: the per-page header (mark + title + tagline) was removed from
+    // every department hub — the department identity now lives only in the
+    // TopBar rail, so a hub page must not grow a second inline mark.
     const page = {
       academy: path.join(appDir, '(academy)', 'tracks', 'page.tsx'),
       work: path.join(appDir, '(work)', 'freelance', 'page.tsx'),
@@ -173,7 +175,7 @@ describe('department marks in the markup', () => {
     } as Record<string, string>;
     for (const [slug, file] of Object.entries(page)) {
       const src = readFileSync(file, 'utf8');
-      expect(src, slug).toContain(`dept-mark dept-mark--${slug}`);
+      expect(src, slug).not.toContain(`dept-mark--${slug}`);
     }
   });
 

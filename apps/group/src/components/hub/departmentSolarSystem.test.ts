@@ -53,22 +53,39 @@ describe('departments solar system', () => {
   });
 
   it('puts every planet centre on its own orbit circle (to mock precision)', () => {
-    // Mock geometry rule: sqrt(dx^2 + dy^2) ~ orbit radius. The mock's
-    // coordinates are rounded to two decimals, so compare to the same
-    // precision (±0.02%) rather than demanding exactness.
-    for (const [orbit, orbitSize, top, left] of [
-      [1, '36%', '35.26%', '60.32%'],
-      [2, '46%', '52%', '72.91%'],
-      [3, '56%', '75.38%', '61.83%'],
-      [4, '66%', '77.03%', '31.07%'],
-      [5, '76%', '46.69%', '12.14%'],
-      [6, '86%', '11.03%', '31.83%'],
-    ] as const) {
+    // Geometry rule: sqrt(dx^2 + dy^2) ~ orbit radius, to two-decimal
+    // precision (the coordinates in the component are rounded to 2dp).
+    const data = [
+      [1, '36%', '56.16%', '66.91%'],
+      [2, '46%', '72.91%', '48.00%'],
+      [3, '56%', '59.58%', '23.69%'],
+      [4, '66%', '31.07%', '22.97%'],
+      [5, '76%', '13.30%', '59.83%'],
+      [6, '86%', '28.50%', '87.24%'],
+    ] as const;
+
+    for (const [orbit, orbitSize, top, left] of data) {
       const radius = parseFloat(orbitSize) / 2;
       const dx = parseFloat(left) - 50;
       const dy = parseFloat(top) - 50;
       const distance = Math.hypot(dx, dy);
       expect(distance, `planet on orbit ${orbit}`).toBeCloseTo(radius, 1);
+    }
+
+    // Feedback: orbits progress small → large. The orbit carrying the
+    // smallest planet is first (orbit 1) and the one with the largest planet
+    // is last (orbit 6) — so ring diameters, planet sizes and the DOM order
+    // all ascend together with the orbit index.
+    {
+      const diameters = data.map(([, orbitSize]) => parseFloat(orbitSize as string));
+      const sizes = [...component.matchAll(/planetSize: '([0-9.]+)%'/g)].map((m) => parseFloat(m[1]));
+      expect(sizes.length).toBeGreaterThanOrEqual(6);
+      for (let i = 1; i < diameters.length; i += 1) {
+        expect(diameters[i], `orbit ${i + 1} ring must be larger than orbit ${i}`).toBeGreaterThan(diameters[i - 1]);
+      }
+      for (let i = 1; i < sizes.length; i += 1) {
+        expect(sizes[i], `planet ${i + 1} must be larger than planet ${i}`).toBeGreaterThan(sizes[i - 1]);
+      }
     }
   });
 
@@ -103,9 +120,18 @@ describe('departments solar system', () => {
 
   describe('colour discipline', () => {
     it('derives every planet, ring and pulse from --dept tokens, not hex', () => {
-      expect(css).toContain('.solar__orbit--1 { --orbit-color: var(--dept-academy); }');
-      for (const token of BRAND_TOKENS) {
-        expect(css).toContain(`--orbit-color: var(--dept-${token.slug})`);
+      // Feedback: each orbit is exactly the colour of the planet riding it —
+      // ring N matches the planet declared on orbit N in the component.
+      for (const [slug, orbit] of [
+        ['labs', 1],
+        ['work', 2],
+        ['events', 3],
+        ['academy', 4],
+        ['material', 5],
+        ['community', 6],
+      ] as const) {
+        expect(css, `orbit ${orbit}`).toContain(`.solar__orbit--${orbit} { --orbit-color: var(--dept-${slug}); }`);
+        expect(css, `pulse ${orbit}`).toContain(`.solar__pulse--${orbit} { --orbit-color: var(--dept-${slug});`);
       }
       // No raw brand hex may appear in the new block.
       const block = css.slice(css.indexOf('Department solar system'));

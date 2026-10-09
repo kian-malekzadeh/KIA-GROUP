@@ -304,18 +304,28 @@
   font-size: var(--fs-sm);
 }
 
-/* --- post-auth landing (/home) ------------------------------------------- */
-/* Three doors, nothing else: centred and airy so the choice reads instantly. */
+/* ---- post-auth landing (/home) ------------------------------------------- ---
+/* Three doors, nothing else: centred and airy so the choice reads instantly.
+   Feedback: the page must fit the viewport — no scrolling. The gate clips
+   overflow and the stage shrinks to the height the header/heading leave us. */
 .home-gate {
   display: flex;
   align-items: center;
-  min-height: calc(100dvh - var(--topbar-h, 4rem));
-  padding-block: var(--space-10);
+  height: calc(100vh - var(--topbar-h, 4rem));
+  max-height: calc(100dvh - var(--topbar-h, 4rem));
+  padding-block: var(--space-2);
+  overflow: clip;
 }
 
 .home-gate .hub {
   width: 100%;
   padding-block: 0;
+}
+
+/* Square stage must fit vertically between the top bar, heading, subtitle
+   and a floor of padding, or it scrolls — cap it against the viewport height. */
+.home-gate .solar__stage {
+  width: min(100%, 640px, calc(100dvh - var(--topbar-h, 4rem) - 14rem));
 }
 
 .home-gate .dash-doors {
@@ -446,6 +456,8 @@
   user-select: none;
 }
 
+
+
 /* --- the Kia Group sun ------------------------------------------------------ */
 
 .solar__sun {
@@ -453,11 +465,12 @@
   z-index: var(--z-dropdown); /* above every ring, pulse and planet */
   width: 22%;
   height: 22%;
+  border-radius: 50%;
+  /* Constants that keep the mark exactly centred on the circular disc. */
+  --sun-mark-size: 62%;
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
-  border-radius: 50%;
   background: radial-gradient(
     circle at 50% 42%,
     var(--ink-800) 0%,
@@ -489,24 +502,18 @@
   }
 }
 
-.solar__sun-title {
-  font-size: clamp(18px, 5.4cqw, 30px);
-  font-weight: 900;
-  letter-spacing: 0.04em;
-  line-height: 1;
+/* The logo mark sits dead-centre on the sun: an aspect-ratio box matching the
+   mark's native 497.37 × 512 viewBox, centred by the sun's flex layout above. */
+.solar__sun-mark {
+  width: var(--sun-mark-size, 62%);
+  aspect-ratio: 497.37 / 512;
   color: var(--group-gold);
-  text-shadow: 0 2px 10px rgb(0 0 0 / 0.5);
 }
 
-.solar__sun-sub {
-  margin-top: 0.3rem;
-  font-size: clamp(8px, 1.9cqw, 12px);
-  font-weight: 700;
-  letter-spacing: 0.2em;
-  text-indent: 0.2em;
-  text-transform: uppercase;
-  color: var(--ink-0);
-  text-shadow: 0 1px 6px rgb(0 0 0 / 0.5);
+.solar__sun-mark > svg {
+  width: 100%;
+  height: 100%;
+  display: block;
 }
 
 /* --- orbit rings ------------------------------------------------------------ */
@@ -517,12 +524,12 @@
   pointer-events: none;
 }
 
-.solar__orbit--1 { --orbit-color: var(--dept-academy); }
-.solar__orbit--2 { --orbit-color: var(--dept-events); }
-.solar__orbit--3 { --orbit-color: var(--dept-material); }
-.solar__orbit--4 { --orbit-color: var(--dept-work); }
-.solar__orbit--5 { --orbit-color: var(--dept-community); }
-.solar__orbit--6 { --orbit-color: var(--dept-labs); }
+.solar__orbit--1 { --orbit-color: var(--dept-labs); }
+.solar__orbit--2 { --orbit-color: var(--dept-work); }
+.solar__orbit--3 { --orbit-color: var(--dept-events); }
+.solar__orbit--4 { --orbit-color: var(--dept-academy); }
+.solar__orbit--5 { --orbit-color: var(--dept-material); }
+.solar__orbit--6 { --orbit-color: var(--dept-community); }
 
 .solar__orbit--1,
 .solar__orbit--3,
@@ -549,12 +556,12 @@
   pointer-events: none;
 }
 
-.solar__pulse--1 { --orbit-color: var(--dept-academy); animation: solar-spin 11s linear infinite; }
-.solar__pulse--2 { --orbit-color: var(--dept-events); animation: solar-spin 17s linear infinite; }
-.solar__pulse--3 { --orbit-color: var(--dept-material); animation: solar-spin 25s linear infinite; }
-.solar__pulse--4 { --orbit-color: var(--dept-work); animation: solar-spin 34s linear infinite; }
-.solar__pulse--5 { --orbit-color: var(--dept-community); animation: solar-spin 44s linear infinite; }
-.solar__pulse--6 { --orbit-color: var(--dept-labs); animation: solar-spin 56s linear infinite; }
+.solar__pulse--1 { --orbit-color: var(--dept-labs); animation: solar-spin 11s linear infinite; }
+.solar__pulse--2 { --orbit-color: var(--dept-work); animation: solar-spin 17s linear infinite; }
+.solar__pulse--3 { --orbit-color: var(--dept-events); animation: solar-spin 25s linear infinite; }
+.solar__pulse--4 { --orbit-color: var(--dept-academy); animation: solar-spin 34s linear infinite; }
+.solar__pulse--5 { --orbit-color: var(--dept-material); animation: solar-spin 44s linear infinite; }
+.solar__pulse--6 { --orbit-color: var(--dept-community); animation: solar-spin 56s linear infinite; }
 
 @keyframes solar-spin {
   from { transform: rotate(0deg); }

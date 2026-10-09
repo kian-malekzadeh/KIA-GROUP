@@ -1,7 +1,6 @@
 'use client';
 
 import Link from 'next/link';
-import { BrandMark } from '@/components/brand/BrandMark';
 import { BookOpen, Languages } from 'lucide-react';
 import { RequireAuth } from '@/components/auth/RequireAuth';
 import { useLanguage } from '@/context/LanguageProvider';
@@ -24,14 +23,6 @@ function TracksGate() {
   return (
     <div className="page-content tracks-page">
       <div className="container hub">
-        <header className="page-head tracks-page__head">
-          <div>
-            <BrandMark className="dept-mark dept-mark--academy" size={28} title="" />
-            <h1>{t('tracks.title')}</h1>
-            <p>{t('tracks.sub')}</p>
-          </div>
-        </header>
-
         <div className="landing-doors landing-doors--two tracks-page__doors">
           <Link href="/tracks/technology" className="door tint--brand">
             <span className="door-icon" aria-hidden="true">

@@ -996,6 +996,7 @@ input[type='tel'],
 .container--wide,
 .app--wide {
   max-width: 1360px;
+  position: relative;
 }
 
 .page-content {

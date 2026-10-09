@@ -1022,9 +1022,9 @@
   color: var(--text);
 }
 
-/* The academy name carries the brand colour inside the plain-text heading. */
+/* The group name carries the Kia Group gold inside the plain-text heading. */
 .dash-doors__brand {
-  color: var(--brand);
+  color: var(--group-gold);
 }
 
 .dash-doors .landing-doors {

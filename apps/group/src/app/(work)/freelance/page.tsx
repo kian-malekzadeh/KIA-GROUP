@@ -1,7 +1,6 @@
 'use client';
 
 import Link from 'next/link';
-import { BrandMark } from '@/components/brand/BrandMark';
 import { Briefcase, Rocket } from 'lucide-react';
 import { useLanguage } from '@/context/LanguageProvider';
 
@@ -16,14 +15,6 @@ export default function FreelancePage() {
   return (
     <div className="page-content freelance-page">
       <div className="container hub">
-        <header className="page-head">
-          <div>
-            <BrandMark className="dept-mark dept-mark--work" size={28} title="" />
-            <h1>{t('freelance.title')}</h1>
-            <p>{t('freelance.sub')}</p>
-          </div>
-        </header>
-
         <div className="bento">
           <Link href="/contact" className="tile tile--half tile--feature">
             <span className="t-icon t-icon--brand" aria-hidden="true">

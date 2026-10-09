@@ -1,7 +1,6 @@
 'use client';
 
 import Link from 'next/link';
-import { BrandMark } from '@/components/brand/BrandMark';
 import { MessageSquare, UsersRound } from 'lucide-react';
 import { useLanguage } from '@/context/LanguageProvider';
 
@@ -19,12 +18,6 @@ export default function CommunityPage() {
   return (
     <div className="page-content community-page">
       <div className="container hub">
-        <header className="page-head community-page__head">
-          <BrandMark className="dept-mark dept-mark--community" size={28} title="" />
-          <h1>{t('community.title')}</h1>
-          <p>{t('community.sub')}</p>
-        </header>
-
         <div className="landing-doors landing-doors--depts community-page__grid">
           <div className="door door--soon dept--community">
             <span className="door-icon" aria-hidden="true">
