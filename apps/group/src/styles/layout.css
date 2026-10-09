@@ -78,7 +78,10 @@
     max-width: 18.5rem;
     height: 100vh;
     margin: 0;
-    padding: var(--space-5) var(--space-4);
+    /* Tight top padding (space-3 vs the previous space-5): the brand lockup
+       is the rail's first row, so this is how close it sits to the page's top
+       edge — feedback asked for it exactly at the top. Bottom keeps space-5. */
+    padding: var(--space-3) var(--space-4) var(--space-5);
     border-radius: 0;
     border: none;
     border-inline-end: 1px solid var(--border);
@@ -318,19 +321,13 @@
     flex: 0 0 auto;
   }
 
-  /* Feedback: the brand lockup sits exactly at the top of the page, on the
-     top edge of the 18.5rem rail — not centred in it. `top: 0` +
-     `translateY(0)` is exact whatever the viewport height; the top edge of the
-     rail is the top edge of the page. The wordmark is then nudged down 2px so
-     its ink bbox centre lands on the button's top edge, matching the mark
-     line, which never carries half-leading. */
-  .panel-shell .topbar:not(.panel-nav--compact) .logo {
-    position: absolute;
-    top: 0;
-    inset-inline: var(--space-4);
-    width: auto;
-    transform: translateY(0);
-  }
+  /* Feedback: the brand lockup leads the rail at the top of the page. It
+     must stay in normal flow (order 1): an earlier `position: absolute;
+     top: 0` anchor took the logo out of flow, so the account cluster became
+     the rail's first row and slid up under the cart pill, covering the
+     tagline. In flow the cluster can never overlap the wordmark; the rail's
+     own padding-top (space-3 below) holds the lockup 12px under the top edge,
+     and the wordmark keeps its 2px optical nudge from the rule below. */
 
   /* Optical top-anchoring for the wordmark. `align-items: center` puts the
      line box dead centre in `.logo`; the black caps sit 2px above that line,

@@ -6,13 +6,17 @@ import { usePathname } from 'next/navigation';
 import { PageBackButton } from '@/components/layout/PageBackButton';
 import { SiteAurora } from '@/components/layout/SiteAurora';
 import { TopBar } from '@/components/layout/TopBar';
+import { departmentForPathname } from '@/components/brand/departments';
 import { useAuth } from '@/context/AuthProvider';
 import { useEffect } from 'react';
 import { PAGE_BACK_FALLBACK, showsPageBack } from '@/lib/pageBack';
 
 /**
  * Site chrome only after registration. Admin uses its own full-bleed shell.
- * Logged-in panel uses a desktop sidebar; mobile keeps the top bar sheet.
+ * Logged-in panel uses a desktop sidebar — rendered only *inside* a department
+ * route, where the rail wears that department's identity (UX-27). On /home and
+ * every other non-department page the rail stays hidden: the hub is a bare,
+ * full-width solar system, and entering a department is what reveals its rail.
  */
 export function SiteChrome({ children }: { children: ReactNode }) {
   const pathname = usePathname();
@@ -20,6 +24,11 @@ export function SiteChrome({ children }: { children: ReactNode }) {
   const isAdminRoute = Boolean(pathname?.startsWith('/admin'));
   const registered = Boolean(user?.profileComplete || learnerState?.profileComplete);
   const showChrome = !loading && registered && !isAdminRoute;
+  // The rail belongs to the departments: it appears the moment the learner
+  // crosses into one of the six roots (or anything below them) and disappears
+  // again on /home, where the department hub paints the full screen.
+  const inDepartment = Boolean(departmentForPathname(pathname));
+  const showRail = showChrome && inDepartment;
   // Admin brings its own shell (with its own back slot); / and /home are roots.
   const showBack = !isAdminRoute && showsPageBack(pathname);
 
@@ -48,7 +57,7 @@ export function SiteChrome({ children }: { children: ReactNode }) {
   return (
     <>
       {!isAdminRoute ? <SiteAurora /> : null}
-      {showChrome ? (
+      {showRail ? (
         <div className="panel-shell">
           <TopBar />
           <div className="panel-content">
