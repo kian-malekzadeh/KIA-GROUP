@@ -29,6 +29,51 @@
   }
 }
 
+/* The catalog home swaps course tiles for حوزه doors: same grid rhythm, but a
+   wider measure so six domains plus custom ones read as a map, not a strip. */
+.catalog-grid--domains {
+  max-width: 60rem;
+  grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+}
+
+/* Domain pills above a course list — switch حوزه or jump to all courses
+   without walking back to the catalog home. */
+.catalog-filters {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+  margin-top: var(--space-5);
+}
+
+.catalog-filter {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.4rem 0.9rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-pill);
+  background: var(--bg-card);
+  color: var(--text-dim);
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  text-decoration: none;
+  transition:
+    color var(--dur-base) var(--ease-out),
+    border-color var(--dur-base) var(--ease-out),
+    background-color var(--dur-base) var(--ease-out);
+}
+
+.catalog-filter:hover {
+  border-color: var(--brand-500);
+  color: var(--text);
+}
+
+.catalog-filter[aria-current='page'] {
+  background: var(--brand-fill);
+  border-color: transparent;
+  color: var(--on-fill);
+}
+
 /* A content panel that borrows the tile surface (course intro, exam result).
    Same box, no accent and no tile height floor — it is not a link card. */
 .catalog-panel {
